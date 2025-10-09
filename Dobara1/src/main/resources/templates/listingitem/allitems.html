@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+
+
+
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-md-4 mb-4" th:each="item, iter : ${allListData}">
+            <div class="card shadow-sm">
+
+                <!-- Carousel -->
+                <div th:id="'carousel' + ${iter.index}" class="carousel slide" data-bs-ride="carousel">
+                    <div class="carousel-inner">
+                        <div class="carousel-item"
+                             th:each="img, imgStat : ${item.images}"
+                             th:class="'carousel-item' + (${imgStat.index} == 0 ? ' active' : '')">
+                            <img th:src="@{'/images/' + ${img.id}}" class="d-block w-100" alt="Item image">
+                        </div>
+                    </div>
+                    <button class="carousel-control-prev" type="button"
+                            th:attr="data-bs-target='#carousel' + ${iter.index}" data-bs-slide="prev">
+                        <span class="carousel-control-prev-icon"></span>
+                    </button>
+                    <button class="carousel-control-next" type="button"
+                            th:attr="data-bs-target='#carousel' + ${iter.index}" data-bs-slide="next">
+                        <span class="carousel-control-next-icon"></span>
+                    </button>
+                </div>
+
+                <!-- Details -->
+                <div class="card-body">
+                    <h5 class="card-title" th:text="${item.companyName}"></h5>
+                    <p class="card-text"><strong>Price:</strong> ₹<span th:text="${item.price}"></span></p>
+                    <p class="card-text"><strong>Color:</strong> <span th:text="${item.color}"></span></p>
+                    <p class="card-text"><strong>Condition:</strong> <span th:text="${item.condition}"></span></p>
+                    <p class="card-text text-muted small" th:text="${item.description}"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

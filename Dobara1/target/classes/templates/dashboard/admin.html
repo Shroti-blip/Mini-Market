@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=1, initial-scale=1.0">
+    <title>Document</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Lato', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            bottom: 0;
+            left: 0;
+            z-index: 100;
+            padding: 70px 0 0;
+            box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.1);
+            min-height: 100vh;
+        }
+
+        .sidebar .nav-link {
+            font-weight: 500;
+            color: #333;
+            font-weight: bold;
+            padding: 0.75rem 1rem;
+            margin: 0.125rem 0;
+            border-radius: 0.375rem;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            color: var(--primary-color);
+            background-color: rgba(13, 110, 253, 0.1);
+        }
+
+        .sidebar .nav-link i {
+            margin-right: 0.5rem;
+        }
+
+        .dashboard-section {
+            display: none;
+        }
+
+        .dashboard-section.active {
+            display: block;
+        }
+
+<!--        vaishnavi code  -->
+
+    .product-card {
+      border-radius: 15px;
+      overflow: hidden;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+      transition: transform 0.2s ease, box-shadow 0.2s ease;
+      height: 100%;
+    }
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+    }
+    .carousel-inner img {
+      height: 200px;
+      object-fit: cover;
+    }
+    .price-tag {
+      font-size: 1.25rem;
+      font-weight: bold;
+      color: green;
+    }
+
+<!--        ends here -->
+
+
+    </style>
+
+</head>
+
+<body>
+
+<nav class="navbar navbar-dark sticky-top bg-light flex-md-nowrap p-2 shadow">
+    <div class="container-fluid">
+        <a class="navbar-brand d-flex align-items-center" href="#">
+<!--            <img src="../images/wallpaper.jpg" alt="Logo"-->
+<!--                 style="width:50px; height:50px; border-radius:50%; object-fit:cover; ">-->
+            <span style="color:black;">
+                 <i class="fas fa-store-alt"></i> Mini Market
+<!--                    <i class="bi bi-person me-1"></i>-->
+<!--                    <span th:text="${user_master.name}"></span>-->
+                </span>
+        </a>
+        <div class="d-flex align-items-center">
+            <div class="dropdown">
+                <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="dropdownUser"
+                   data-bs-toggle="dropdown">
+                    <img th:if="${user_master.profile_pic != null}" th:src="@{/userphoto}"
+                         class="rounded-circle me-2" width="40" height="40">
+                    <div th:unless="${user_master.profile_pic != null}">
+                        <i class="fas fa-user-circle rounded-circle me-2 fs-1"></i>
+                    </div>
+                    <span class="d-none d-sm-inline text-dark" th:text="${user_master.name}"></span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Company Profile</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><a class="dropdown-item" th:href="@{/logout}" onclick="confirmLogout(event)">
+                        <i class="fas fa-sign-in-alt me-2"></i>Sign
+                        out</a></li>
+                </ul>
+            </div>
+        </div>
+        <button class="btn btn-outline-light d-md-none me-2" type="button" data-bs-toggle="collapse"
+                data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span style="color:black"><i class="bi bi-list"></i></span>
+        </button>
+    </div>
+</nav>
+<div class="container-fluid">
+    <div class="row">
+        <!-- Sidebar -->
+        <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block sidebar collapse bg-white">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item"><a class="nav-link active" href="#home"><i
+                            class="bi bi-house me-2"></i>Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#show-all-items"><i
+                            class="bi bi-people me-2"></i>Show All Items</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="#show-all-user">
+                        <i class="bi bi-people me-2"></i>show all user</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#Profile"><i
+                            class="bi bi-mortarboard me-2"></i>Profile</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#feedback"><i
+                            class="bi bi-book me-2"></i>Feedback Review</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#profile"><i
+                            class="bi bi-folder2-open me-2"></i>Profile</a></li>
+                    <!-- <li class="nav-item"><a class="nav-link" href="#message-part"><i
+                                class="bi bi-chat-dots me-2"></i>Offers</a></li> -->
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
+
+            <div class="row my-4">
+                <div id="home" class="dashboard-section">
+                    <h2 class="mt-3">Admin Dashboard</h2>
+                </div>
+
+                <!-- New User Registration Part -->
+                <div id="show-all-items" class="dashboard-section">
+                    <h3>show all items</h3>
+
+                    <div class="container mt-5">
+                        <div class="row">
+<!--                            Item card code-->
+                            <div class="col-md-4 mb-4" th:each="listing , iter:${listdata}">
+                                <div class="card shadow-sm position-relative">
+<!--                                    carousel-->
+                                    <div th:id="'carousel' +${iter.index}" class="carousel slide"
+                                    data-bs-ride="carousel">
+                                        <div class="carousel-inner">
+                                            <div class="carousel-item"
+                                            th:each="img, imgStat : ${listing.images}"
+                                            th:class="'carousel-item' + (${imgStat.index} == 0 ? ' active' : '')">
+                                                <img th:src="@{'/images/' +${img.id}"
+                                                class="d-block w-100 carousel-img" alt="Item 1 images">
+                                            </div>
+                                        </div>
+                                        <button class="carousel-control-prev" type="button"
+                                        th:attr="data-bs-target='#carousel' +${iter.index}"
+                                        data-bs-slide="prev">
+                                            <span class="carousel-control-prev-icon"></span>
+                                        </button>
+                                        <button class="carousel-control-next" type="button"
+                                                th:attr="data-bs-target='#carousel' + ${iter.index}"
+                                                data-bs-slide="next">
+                                            <span class="carousel-control-next-icon"></span>
+                                        </button>
+                                    </div>
+<!--                                    Details-->
+                                    <div class="card-body">
+                                        <h5 class="card-title">
+                                            <span th:text="${listing.companyName}"></span>
+                                        </h5>
+                                        <p class="card-text"><strong>Price:</strong> ₹<span
+                                        th:text="${listing.price}"></span></p>
+                                        <p class="card-text"><strong>Color:</strong> <span
+                                                th:text="${listing.color}"></span></p>
+                                        <p class="card-text"><strong>Condition:</strong> <span
+                                                th:text="${listing.condition}"></span></p>
+                                        <p class="card-text text-muted small"><span
+                                                th:text="${listing.description}"></span></p>
+                                        <button type="button"
+                                        class="btn btn-success w-100 mt-2"
+                                        data-bs-toggle="modal"
+                                        data-bs-target="#deleteitem">
+                                            <i class="bi bi-cart-plus me-1"></i>Remove Item
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <div id="show-all-user" class="dashboard-section">
+                    <h1>This is a Div</h1>
+                    <div class="card p-3">
+
+                        <!-- Tabs -->
+                        <ul class="nav nav-tabs" id="myTab2" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link active" id="newuser-tab" data-bs-toggle="tab"
+                                        data-bs-target="#addnewitem" type="button">Add New User</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="userupdate-tab" data-bs-toggle="tab"
+                                        data-bs-target="#upload_images" type="button">Upload Images</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" id="usernotifications-tab" data-bs-toggle="tab"
+                                        data-bs-target="#user_notifications" type="button">Notifications</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link " id="user-tab" data-bs-toggle="tab"
+                                        data-bs-target="#allusers" type="button">All Users</button>
+                            </li>
+                        </ul>
+
+                        <!-- Tab Content -->
+                        <div class="tab-content p-3">
+                            <!--                            <div class="tab-pane fade" id="allusers" role="tabpanel">-->
+                            <!--                                <h5>User Profile</h5>-->
+                            <!--                                <p>All User will be show here.</p>-->
+                            <!--                            </div>-->
+                            <div class="tab-pane fade show active" id="addnewitem" role="tabpanel">
+                                <h4>Add New Item</h4>
+                            </div>
+
+                            <!--              Upload Image form code -->
+                            <div class="tab-pane fade" id="upload_images" role="tabpanel">
+                                <h5>Image upload</h5>
+
+                            </div>
+
+                            <div class="tab-pane fade" id="user_notifications" role="tabpanel">
+                                <h5>User Notifications</h5>
+                                <p>User Notifications list goes here.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </main>
+    </div>
+</div>
+
+
+
+
+<!-- Preview Script -->
+<script>
+    const input = document.getElementById('productImages');
+    const preview = document.querySelector('.preview');
+
+    input.addEventListener('change', () => {
+        preview.innerHTML = "";
+        Array.from(input.files).forEach(file => {
+            const reader = new FileReader();
+            reader.onload = e => {
+                const img = document.createElement('img');
+                img.src = e.target.result;
+                preview.appendChild(img);
+            }
+            reader.readAsDataURL(file);
+        });
+    });
+</script>
+
+
+<!--Tab related script-->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const navLinks = document.querySelectorAll('.sidebar .nav-link');
+        const sections = document.querySelectorAll('.dashboard-section');
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                navLinks.forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+                sections.forEach(section => section.classList.remove('active'));
+                const targetId = this.getAttribute('href').substring(1);
+                document.getElementById(targetId).classList.add('active');
+            });
+        });
+    });
+</script>
+
+
+<!--Logout script-->
+
+<script>
+    function confirmLogout(event) {
+        event.preventDefault(); // stops default navigation
+        const confirmed = confirm("Are you sure you want to log out?");
+        if (confirmed) {
+            window.location.href = '/logout'; // call your mapping
+        }
+    }
+</script>
+
+
+
+
+
+
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+
+</body>
+
+</html>

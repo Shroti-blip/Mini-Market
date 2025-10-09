@@ -1,0 +1,13 @@
+package com.example.Dobara1;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.boot.test.context.SpringBootTest;
+
+@SpringBootTest
+class Dobara1ApplicationTests {
+
+	@Test
+	void contextLoads() {
+	}
+
+}

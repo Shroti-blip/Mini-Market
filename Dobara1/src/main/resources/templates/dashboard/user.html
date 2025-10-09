@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+    <style>
+
+        :root {
+            --primary-color: #00A859;
+            --secondary-color: #007A43;
+            --accent-color: #FF6B35;
+            --dark-color: #2C3E50;
+            --light-bg: #F8F9FA;
+        }
+
+        body {
+            font-family: 'Lato', sans-serif;
+            font-size: 0.9rem;
+            background-color: #f8f9fa;
+        }
+
+        /* Sidebar (no fixed positioning so grid columns align properly) */
+        .sidebar {
+            padding-top: 70px;
+            /* space for navbar */
+            box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.05);
+            min-height: calc(100vh - 56px);
+        }
+
+        .sidebar .nav-link {
+            font-weight: bold;
+            color: #333;
+            padding: 0.75rem 1rem;
+            margin: 0.125rem 0;
+            border-radius: 0.375rem;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active {
+            color: var(--primary-color);
+            background-color: rgba(13, 110, 253, 0.06);
+        }
+
+        .dashboard-section {
+            display: none;
+        }
+
+        .dashboard-section.active {
+            display: block;
+        }
+
+             .navbar-brand {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--primary-color) !important;
+        }
+
+        .text-color{
+        color: var(--primary-color) !important;
+        }
+
+
+        /* Card and form styling */
+        .card {
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.06);
+        }
+
+        .card-header {
+            color: white;
+            font-weight: 600;
+            text-align: center;
+            font-size: 1.05rem;
+            border-radius: 12px 12px 0 0;
+            background: #4579c5;
+        }
+
+        .btn-custom {
+            background: #E29C4A;
+            border: none;
+            transition: 0.3s ease;
+        }
+
+        .btn-custom:hover {
+            background: linear-gradient(45deg, #6610f2, #0d6efd);
+            transform: translateY(-2px);
+        }
+
+        /* Image upload styling */
+        .upload-card {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 12px;
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.06);
+        }
+
+        .form-label {
+            font-weight: 600;
+        }
+
+        .preview img {
+            max-width: 100px;
+            margin: 5px;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
+        }
+
+
+<!--        popup css  -->
+        <style>
+.logout-popup {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4);
+    z-index: 999;
+    justify-content: center;
+    align-items: center;
+}
+
+.logout-box {
+    background: #fff;
+    padding: 25px 35px;
+    border-radius: 15px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+    text-align: center;
+    transition: all 0.3s ease;
+    animation: fadeIn 0.3s;
+}
+
+.logout-buttons {
+    margin-top: 15px;
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+}
+
+.btn-yes, .btn-cancel {
+    padding: 8px 18px;
+    border: none;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.btn-yes {
+    background-color: #0d6efd;
+    color: white;
+}
+
+.btn-cancel {
+    background-color: #dc3545;
+    color: white;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+
+        .carousel-img {
+    height: 200px;           /* fixed height */
+    object-fit: cover;       /* crops image if aspect ratio is different */
+}
+
+        .carousel-inner {
+    height: 200px;  /* same as image height */
+}
+
+        @media (max-width: 768px) {
+    .carousel-img {
+        height: 150px;
+    }
+    .carousel-inner {
+        height: 150px;
+    }
+}
+
+    </style>
+
+
+
+
+</head>
+
+<body>
+
+<nav class="navbar navbar-dark sticky-top bg-light flex-md-nowrap p-2 shadow">
+    <div class="container-fluid">
+        <a class="navbar-brand d-flex align-items-center" href="#">
+<!--            <img src="../images/wallpaper.jpg" alt="Logo"-->
+<!--                 style="width:50px; height:50px; border-radius:50%; object-fit:cover;">-->
+            <span>
+                <i class="fas fa-store-alt"></i> Mini Market
+<!--                    <i class="bi bi-person me-1"></i>-->
+<!--                    <span th:text="${user_master.name}"></span>-->
+                </span>
+        </a>
+
+        <div class="d-flex align-items-center">
+            <div class="dropdown">
+                <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="dropdownUser"
+                   data-bs-toggle="dropdown">
+                    <img th:if="${user_master.profile_pic != null}" th:src="@{/userphoto}"
+                         class="rounded-circle me-2" width="40" height="40">
+                    <div th:unless="${user_master.profile_pic != null}">
+                        <i class="bi bi-person-circle rounded-circle me-2 fs-1"></i>
+                    </div>
+                    <span class="d-none d-sm-inline text-dark text-color" th:text="${user_master.name}" style="font-size:1rem;"></span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-end">
+                    <li><a class="dropdown-item" href="#"><i class="bi bi-person me-2"></i>Company Profile</a></li>
+                    <li>
+                        <hr class="dropdown-divider">
+                    </li>
+                    <li><a class="dropdown-item" th:href="@{/logout}"><i class="bi bi-box-arrow-right me-2"></i>Sign
+                        out</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Mobile toggle -->
+        <button class="btn btn-outline-light d-md-none me-2" type="button" data-bs-toggle="collapse"
+                data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span style="color:black"><i class="bi bi-list"></i></span>
+        </button>
+    </div>
+</nav>
+
+<div class="container-fluid">
+    <div class="row">
+
+        <!-- Sidebar: col-lg-3 -->
+        <nav id="sidebarMenu" class="col-md-4 col-lg-3 d-md-block bg-white sidebar collapse">
+            <div class="position-sticky pt-3">
+                <ul class="nav flex-column">
+                    <li class="nav-item"><a class="nav-link active" href="#home"><i
+                            class="bi bi-house me-2"></i>Home</a></li>
+<!--                    <li class="nav-item">-->
+<!--                        <a class="nav-link" th:href="@{/showallitems/all}">-->
+<!--                            <i class="bi bi-people me-2"></i>Purchase-->
+<!--                        </a>-->
+<!--                    </li>-->
+                    <li class="nav-item"><a class="nav-link" href="#purchase"><i
+                            class="bi bi-house me-2"></i>Purchase</a></li>
+
+<!--                    <li class="nav-item"><a th:href="@{/showallitems(userId=${user_master.id})}">-->
+<!--                        <i class="bi bi-bag me-2"></i> Purchase</a></li>-->
+
+                    <li class="nav-item"><a class="nav-link" href="#sell"><i class="bi bi-bag me-2"></i>Sell</a>
+                    </li>
+                    <li class="nav-item"><a class="nav-link" href="#liked-item"><i
+                            class="bi bi-heart me-2"></i>Liked Items</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#feedback"><i
+                            class="bi bi-chat-left-text me-2"></i>Feedback</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#profile"><i
+                            class="bi bi-person-circle me-2"></i>Profile</a></li>
+                    <li class="nav-item">
+                        <a href="#" class="nav-link" onclick="confirmLogout(event)">
+                            <i class="bi bi-box-arrow-right me-2"></i>Log Out
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+
+        <!-- Main Content: col-lg-7 -->
+        <main class="col-md-8 col-lg-9 px-md-4">
+            <div class="row my-4">
+
+                <!-- Home Section -->
+                <div id="home" class="dashboard-section active" th:classappend="${activeTab}=='home' ? 'active'">
+
+<!--             Html part       -->
+
+                    <div class="container mt-4">
+                        <!-- Welcome Section -->
+                        <div class="text-center mb-4">
+                             <h4 class="fw-bold">Welcome back,<span th:text="${user_master.name}"></span> 👋</h4>
+                            <p class="text-muted"><span th:text="${user_master.email}"></span></p>
+                        </div>
+
+                        <!-- Stats Cards -->
+                        <div class="row g-4 mb-4">
+                            <div class="col-md-4">
+                                <div class="card text-center shadow-sm border-0 rounded-3">
+                                    <div class="card-body">
+                                        <i class="bi bi-box-seam display-5 text-primary"></i>
+                                        <h6 class="mt-2">Items for Sale</h6>
+                                        <p class="fs-4 fw-bold"><span th:text="${totalUploaded}"></span></p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="card text-center shadow-sm border-0 rounded-3">
+                                    <div class="card-body">
+                                        <i class="bi bi-bag-check display-5 text-success"></i>
+                                        <h6 class="mt-2">Purchases</h6>
+                                        <p class="fs-4 fw-bold"><span>0</span></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="card text-center shadow-sm border-0 rounded-3">
+                                    <div class="card-body">
+                                        <i class="bi bi-heart text-danger fs-1 mb-3"></i>
+                                        <h6 class="mt-2">Liked-Items</h6>
+                                        <p class="fs-4 fw-bold"><span th:text="${totalLikedItems}"></span></p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Recent Activity -->
+                        <h5 class="fw-bold mb-3"><i class="bi bi-clock-history me-2"></i>Recent Activity</h5>
+                        <ul class="list-group list-group-flush mb-4 shadow-sm rounded-3">
+                            <li class="list-group-item"><i class="bi bi-box"></i> You listed <strong>iPhone 12</strong> for sale</li>
+                            <li class="list-group-item"><i class="bi bi-heart text-danger"></i> You liked <strong>Wooden Study Table</strong></li>
+                            <li class="list-group-item"><i class="bi bi-chat-left-dots text-warning"></i> You received an offer on <strong>Samsung TV</strong></li>
+                        </ul>
+
+
+
+                        <!-- Quick Tips -->
+                        <div class="alert alert-info shadow-sm">
+                            <i class="bi bi-lightbulb me-2"></i>
+                            <strong>Tip:</strong> Add clear photos & details to sell your items faster!
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="container mt-5">
+                            <div class="row justify-content-center g-4 text-center">
+
+                                <!-- Sell New Item -->
+                                <div class="col-md-3">
+                                    <div class="card shadow-sm border-0 rounded-4 p-4 hover-effect">
+                                        <i class="bi bi-plus-circle text-primary fs-1 mb-3"></i>
+                                        <h5 class="fw-bold">Sell New Item</h5>
+                                        <p class="text-muted mb-3">List your product for sale.</p>
+                                        <a href="#sell" class="btn btn-outline-primary rounded-pill px-4">Go</a>
+                                    </div>
+                                </div>
+
+                                <!-- View Purchases -->
+                                <div class="col-md-3">
+                                    <div class="card shadow-sm border-0 rounded-4 p-4 hover-effect">
+                                        <i class="bi bi-bag text-success fs-1 mb-3"></i>
+                                        <h5 class="fw-bold">View Purchases</h5>
+                                        <p class="text-muted mb-3">Check your bought items.</p>
+                                        <a href="#purchase" class="btn btn-outline-success rounded-pill px-4">Go</a>
+                                    </div>
+                                </div>
+
+                                <!-- Liked Items -->
+                                <div class="col-md-3">
+                                    <div class="card shadow-sm border-0 rounded-4 p-4 hover-effect">
+                                        <i class="bi bi-heart text-danger fs-1 mb-3"></i>
+                                        <h5 class="fw-bold">Liked Items</h5>
+                                        <p class="text-muted mb-3">See what you’ve liked.</p>
+                                        <a href="#liked" class="btn btn-outline-danger rounded-pill px-4">Go</a>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+
+                <!-- Purchase Section -->
+                <div id="purchase" class="dashboard-section" th:classappend="${activeTab}=='purchase' ? 'active'">
+
+<!--                    search bar starts    -->
+                    <div class="container mt-3">
+                        <div class="row p-3 g-2 justify-content-evenly">
+
+                            <!-- Search by Category -->
+                            <div class="col-md-5 ">
+                                <form th:action="@{/user/dashboard}" method="get" id="categoryForm" class="d-flex">
+<!--                                     name="categoryId" -->
+                                    <select class="form-select me-2" name="categoryId" onchange="this.form.submit()">
+                                        <option value="">-- Select Category --</option>
+                                        <!-- Categories coming from DB -->
+                                        <option th:each="cat : ${categorydata}"
+                                                th:value="${cat.cat_id}"
+                                                th:text="${cat.name}"></option>
+<!--                                                  th:value="${cat.cat_id}" without this is still woriking.-->
+                                    </select>
+<!--                                    <button type="submit"  class="btn btn-primary">Search</button>-->
+                                </form>
+                            </div>
+
+                            <!-- Search by Price -->
+                            <div class="col-md-5">
+                                <form th:action="@{/listing/search/price}" method="get"  class="d-flex">
+                                    <input type="number" class="form-control me-2" name="price" placeholder="Search by Item price">
+                                    <button type="submit" class="btn btn-success">Search</button>
+                                </form>
+                            </div>
+
+<!--                            <div th:each="item : ${byPrice}">-->
+<!--                                <p th:text="${item.description}"></p>-->
+<!--                            </div>-->
+                        </div>
+                    </div>
+
+<!--        search bar end       -->
+                    <div class="container mt-5">
+                        <div class="row ">
+                            <!-- Item Card 1 -->
+                            <div class="col-md-4 mb-4" th:each="listing , iter: ${listdata}">
+                                <div class="card shadow-sm position-relative">
+
+<!--                                    LIKED ICON -->
+                                    <i class="bi bi-heart  position-absolute"
+                                    style="top:10px; right:10px; font-size:1.5rem; cursor:pointer; z-index:100;"
+                                       th:attr="data-id=${listing.id}"
+                                       th:classappend="${likedListingIds.contains(listing.id)} ? 'bi-heart-fill text-danger' : 'bi-heart'"
+                                       th:data-user-id="${listing.user.id}"
+                                       onclick="toggleLike(this)"></i>
+
+                                    <!-- Carousel -->
+                                    <div th:id="'carousel' +${iter.index}" class="carousel slide"
+                                         data-bs-ride="carousel">
+                                        <div class="carousel-inner">
+                                            <div class="carousel-item "
+                                                 th:each="img, imgStat : ${listing.images}"
+                                                 th:class="'carousel-item' + (${imgStat.index} == 0 ? ' active' : '')">
+                                                <img th:src="@{'/images/' +${img.id}}"
+                                                     class="d-block w-100 carousel-img"  alt="Item 1 image">
+                                            </div>
+                                        </div>
+                                        <button class="carousel-control-prev" type="button"
+                                                th:attr="data-bs-target='#carousel' + ${iter.index}"
+                                                data-bs-slide="prev">
+                                            <span class="carousel-control-prev-icon"></span>
+                                        </button>
+                                        <button class="carousel-control-next" type="button"
+                                                th:attr="data-bs-target='#carousel' + ${iter.index}"
+                                                data-bs-slide="next">
+                                            <span class="carousel-control-next-icon"></span>
+                                        </button>
+                                    </div>
+
+                                    <!-- Details -->
+                                    <div class="card-body">
+                                        <h5 class="card-title"><span
+                                                th:text="${listing.companyName}"></span></h5>
+                                        <p class="card-text"><strong>Price:</strong> ₹<span
+                                                th:text="${listing.price}"></span></p>
+                                        <p class="card-text"><strong>Color:</strong> <span
+                                                th:text="${listing.color}"></span></p>
+                                        <p class="card-text"><strong>Condition:</strong> <span
+                                                th:text="${listing.condition}"></span></p>
+                                        <p class="card-text text-muted small"><span
+                                                th:text="${listing.description}"></span></p>
+                                        <button type="button"
+                                                class="btn btn-success w-100 mt-2"
+                                                th:attr="data-itemid=${listing.id}"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#purchaseitemInfo">
+                                            <i class="bi bi-cart-plus me-1"></i> Buy Now
+                                        </button>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+<!--                    code for purchase popup  starts here-->
+
+                    <div class="modal fade" id="purchaseitemInfo" tabindex="-1" aria-labelledby="purchaseitemmodal" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-lg">
+                            <div class="modal-content border-0 rounded-4 shadow-lg">
+
+                                <div class="modal-header bg-success text-white">
+                                    <h5 class="modal-title fw-bold" id="purchaseitemmodal">Confirm Your Purchase</h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+
+                                <div class="modal-body">
+                                    <div class="container">
+                                        <form th:action="@{/purchase}" method="post" th:object="${purchase}">
+
+                                            <input type="hidden" id="itemIdField" name="itemId">
+                                            <!-- ITEM SUMMARY -->
+                                            <div class="text-center mb-4">
+                                                <div class="p-3 bg-light rounded-3">
+<!--                                                    <p class="mb-1">Price: ₹<span th:text="${listdata.price}"></span></p>-->
+                                                    <div class="d-flex justify-content-center align-items
+                                                    -center gap-2">
+                                                        <label class="fw-semibold">Quantity:</label>
+                                                        <input type="number" class="form-control" name="quantity" th:field="*{quantity}"
+                                                               value="1" min="1" style="width: 80px;">
+                                                    </div>
+                                                    <!-- <input type="hidden" th:value="${listing.id}" name="itemId"> -->
+                                                </div>
+                                            </div>
+
+                                            <!-- USER INFO -->
+                                            <h5 class="fw-bold text-secondary mb-3">Customer Information</h5>
+
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Full Name</label>
+                                                <input type="text" class="form-control" name="name" th:value="${user_master.name}" required>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Email</label>
+                                                <input type="email" class="form-control" name="email" th:value="${user_master.email}" required>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Contact Number</label>
+                                                <input type="text" class="form-control" name="contact" th:value="${user_master.contact}" required>
+                                            </div>
+
+                                            <div class="mb-3">
+                                                <label class="form-label fw-bold">Delivery Address</label>
+                                                <textarea class="form-control" name="address" rows="3" th:text="${user_master.address}" required></textarea>
+                                            </div>
+
+                                            <!-- PAYMENT INFO -->
+                                            <h5 class="fw-bold text-secondary mb-3">Payment Method</h5>
+                                            <div class="mb-3">
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio"  name="mode" value="COD" id="cod" checked>
+                                                    <label class="form-check-label fw-semibold" for="cod">
+                                                        Cash on Delivery (COD)
+                                                    </label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio"  name="mode" value="Online" id="online">
+                                                    <label class="form-check-label fw-semibold" for="online">
+                                                        Online Payment
+                                                    </label>
+                                                </div>
+                                            </div>
+
+                                            <!-- BUTTONS -->
+                                            <div class="d-flex justify-content-end gap-3 mt-4">
+                                                <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">Cancel</button>
+                                                <button type="submit" class="btn btn-success px-4"
+                                                        onclick="return confirm('Are you sure you want to confirm this purchase?');">
+                                                    Confirm Purchase</button>
+                                            </div>
+
+                                        </form>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <!--                    code for purchse popup ends here-->
+
+                </div>
+
+<!--                -->
+                <!-- Sell Section -->
+                <div id="sell" class="dashboard-section" th:classappend="${activeTab}=='sell' ? 'active'">
+                    <h3>Sell Section</h3>
+
+                    <div class="card p-3">
+
+                        <!-- Tabs -->
+                        <ul class="nav nav-tabs" id="myTab2" role="tablist">
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link"
+                                        th:classappend="${activeSellTab} != 'upload' ? 'active' : ''"
+                                        data-bs-toggle="tab" data-bs-target="#addnewitem" type="button">Add New
+                                    Item</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link"
+                                        th:classappend="${activeSellTab} == 'uploadImage' ? 'active' : ''"
+                                        data-bs-toggle="tab" data-bs-target="#upload_images" type="button">Upload
+                                    photos</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" th:classappend="${activeSellTab} == 'show' ? 'active' : ''"
+                                        data-bs-toggle="tab" data-bs-target="#show_all_items" type="button">Show All
+                                    Items</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link" th:classappend="${activeSellTab} == 'edit' ? 'active' : ''"
+                                        data-bs-toggle="tab" data-bs-target="#edit_items" type="button">Edit
+                                    Items</button>
+                            </li>
+                        </ul>
+
+                        <!-- Tab Content (all panes inside here) -->
+                        <div class="tab-content p-3">
+
+                            <!-- Add New Item -->
+                            <div class="tab-pane fade"
+                                 th:classappend="${activeSellTab} != 'upload' ? 'show active' : ''" id="addnewitem"
+                                 role="tabpanel">
+                                <!--                                <h4>Add New Item</h4>   -->
+                                <div class="container mt-4">
+                                    <div class="row justify-content-center">
+                                        <!-- Main form column -->
+                                        <div class="col-md-12">
+                                            <div class="card">
+                                                <div class="card-header">Create New Listing</div>
+                                                <div class="card-body p-4">
+                                                    <form th:action="@{/listing/save}" th:object="${listing}"
+                                                          method="post">
+                                                        <!-- Description -->
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Description</label>
+                                                            <textarea class="form-control" th:field="*{description}"
+                                                                      rows="3" required></textarea>
+                                                        </div>
+
+                                                        <!-- Condition -->
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Condition</label>
+                                                            <select class="form-select" th:field="*{condition}"
+                                                                    required>
+                                                                <option value="">-- Select Condition --</option>
+                                                                <option value="New">New</option>
+                                                                <option value="Like New">Like New</option>
+                                                                <option value="Used">Used</option>
+                                                                <option value="Refurbished">Refurbished</option>
+                                                            </select>
+                                                        </div>
+
+                                                        <!-- Price + Color in one row -->
+                                                        <div class="row">
+                                                            <div class="col-md-6 mb-3">
+                                                                <label class="form-label">Price (₹)</label>
+                                                                <input type="number" class="form-control"
+                                                                       th:field="*{price}" required>
+                                                            </div>
+                                                            <div class="col-md-6 mb-3">
+                                                                <label class="form-label">Color</label>
+                                                                <input type="text" class="form-control"
+                                                                       th:field="*{color}">
+                                                            </div>
+                                                        </div>
+
+                                                        <!-- Company Name -->
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Company Name</label>
+                                                            <input type="text" class="form-control"
+                                                                   th:field="*{companyName}">
+                                                        </div>
+
+                                                        <!-- Location -->
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Location</label>
+                                                            <input type="text" class="form-control"
+                                                                   th:field="*{location}">
+                                                        </div>
+
+                                                        <!-- Category -->
+                                                        <div class="mb-3">
+                                                            <label class="form-label">Category</label>
+                                                            <select class="form-select" th:field="*{category}"
+                                                                    required>
+                                                                <option value="">-- Select Category --</option>
+                                                                <option th:each="cat : ${categorydata}"
+                                                                        th:text="${cat.name}" th:value="${cat.cat_id}">
+                                                                </option>
+                                                            </select>
+                                                        </div>
+
+                                                        <button type="submit"
+                                                                class="btn btn-custom w-100 py-2">Submit
+                                                            Listing</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Right spacer column inside form area -->
+                                        <div class="col-md-3 d-none d-md-block"></div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Upload Images -->
+                            <div class="tab-pane fade"
+                                 th:classappend="${activeSellTab} == 'uploadImage' ? 'show active' : ''"
+                                 id="upload_images" role="tabpanel">
+                                <div class="container">
+                                    <div class="upload-card bg-white">
+                                        <h3 class="text-center mb-4">Upload Product Images</h3>
+                                        <form method="post" th:action="@{/images/upload}"
+                                              enctype="multipart/form-data">
+                                            <input type="hidden" name="listingId" th:value="${listingId}">
+                                            <div class="mb-3">
+                                                <label class="form-label">Select Images</label>
+                                                <input class="form-control" type="file" name="images"
+                                                       id="productImages" multiple accept="image/*">
+                                                <div class="form-text">You can select multiple images.</div>
+                                            </div>
+                                            <div class="preview d-flex flex-wrap"></div>
+                                            <div class="d-grid">
+                                                <button type="submit" class="btn btn-primary">Upload</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Show All Items -->
+                            <div class="tab-pane fade"
+                                 th:classappend="${activeSellTab} == 'show' ? 'show active' : ''" id="show_all_items"
+                                 role="tabpanel">
+                                <h5>All Items</h5>
+
+                                <div class="container mt-5">
+                                    <div class="row ">
+                                        <!-- Item Card 1 -->
+                                        <div class="col-md-6 mb-4" th:each="listing , iter: ${listingUserData}">
+                                            <div class="card shadow-sm">
+
+                                                <!-- Carousel -->
+                                                <div th:id="'carousel' +${iter.index}" class="carousel slide"
+                                                     data-bs-ride="carousel">
+                                                    <div class="carousel-inner">
+                                                        <div class="carousel-item "
+                                                             th:each="img, imgStat : ${listing.images}"
+                                                             th:class="'carousel-item' + (${imgStat.index} == 0 ? ' active' : '')">
+                                                            <img th:src="@{'/images/' +${img.id}}"
+                                                                 class="d-block w-100" alt="Item 1 image">
+                                                        </div>
+                                                    </div>
+                                                    <button class="carousel-control-prev" type="button"
+                                                            th:attr="data-bs-target='#carousel' + ${iter.index}"
+                                                            data-bs-slide="prev">
+                                                        <span class="carousel-control-prev-icon"></span>
+                                                    </button>
+                                                    <button class="carousel-control-next" type="button"
+                                                            th:attr="data-bs-target='#carousel' + ${iter.index}"
+                                                            data-bs-slide="next">
+                                                        <span class="carousel-control-next-icon"></span>
+                                                    </button>
+                                                </div>
+
+                                                <!-- Details -->
+                                                <div class="card-body">
+                                                    <h5 class="card-title"><span
+                                                            th:text="${listing.companyName}"></span></h5>
+                                                    <p class="card-text"><strong>Price:</strong> ₹<span
+                                                            th:text="${listing.price}"></span></p>
+                                                    <p class="card-text"><strong>Color:</strong> <span
+                                                            th:text="${listing.color}"></span></p>
+                                                    <p class="card-text"><strong>Condition:</strong> <span
+                                                            th:text="${listing.condition}"></span></p>
+                                                    <p class="card-text text-muted small"><span
+                                                            th:text="${listing.description}"></span></p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Edit Items -->
+                            <div class="tab-pane fade"  th:classappend="${activeSellTab} == 'show' ? 'show active' : ''"
+                                 id="edit_items" role="tabpanel">
+                                <h5>Edit Items</h5>
+<!--                                -->
+
+                                <div class="container mt-5">
+                                    <div class="row ">
+                                        <!-- Item Card -->
+                                        <div class="col-md-6 mb-4" th:each="listing , iter: ${listingUserData}">
+                                            <div class="card shadow-sm">
+
+                                                <!-- Carousel -->
+                                                <div th:id="'carousel' +${iter.index}" class="carousel slide" data-bs-ride="carousel">
+                                                    <div class="carousel-inner">
+                                                        <div class="carousel-item"
+                                                             th:each="img, imgStat : ${listing.images}"
+                                                             th:class="'carousel-item' + (${imgStat.index} == 0 ? ' active' : '')">
+                                                            <img th:src="@{'/images/' +${img.id}}" class="d-block w-100" alt="Item 1 image">
+                                                        </div>
+                                                    </div>
+                                                    <button class="carousel-control-prev" type="button"
+                                                            th:attr="data-bs-target='#carousel' + ${iter.index}" data-bs-slide="prev">
+                                                        <span class="carousel-control-prev-icon"></span>
+                                                    </button>
+                                                    <button class="carousel-control-next" type="button"
+                                                            th:attr="data-bs-target='#carousel' + ${iter.index}" data-bs-slide="next">
+                                                        <span class="carousel-control-next-icon"></span>
+                                                    </button>
+                                                </div>
+
+                                                <!-- Details -->
+                                                <div class="card-body">
+                                                    <h5 class="card-title">
+                                                        <span th:text="${listing.companyName}"></span>
+                                                    </h5>
+                                                    <p class="card-text"><strong>Price:</strong> ₹<span th:text="${listing.price}"></span></p>
+                                                    <p class="card-text"><strong>Color:</strong> <span th:text="${listing.color}"></span></p>
+                                                    <p class="card-text"><strong>Condition:</strong> <span th:text="${listing.condition}"></span></p>
+                                                    <p class="card-text text-muted small"><span th:text="${listing.description}"></span></p>
+
+                                                    <!-- Buttons -->
+
+                                                    <div class="d-flex justify-content-between mt-3">
+                                                        <form method="post" th:action="@{/updateItem}">
+                                                        <a th:href="@{'/listing/edit/' + ${listing.id}}" class="btn btn-sm btn-primary">
+                                                            Edit
+                                                        </a>
+                                                      </form>
+                                                        <form method="post" th:action="@{/deleteitem}">
+                                                        <a th:href="@{'/deleteitem/' + ${listing.id}}" class="btn btn-sm btn-danger"
+                                                           onclick="return confirm('Are you sure you want to delete this item?');">
+                                                            Delete
+                                                        </a>
+                                                        </form>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+                            </div>
+
+                        </div> <!-- /.tab-content -->
+
+                    </div> <!-- /.card -->
+
+                </div> <!-- /#sell -->
+
+<!--                Liked-item section starts here . -->
+                <div id="liked-item" class="dashboard-section" th:classappend="${activeTab}=='liked-item' ? 'active'">
+<!--                    <h3>Hola LikedItems.</h3>-->
+
+<!--                    card code -->
+                    <div class="container mt-5">
+                        <div class="row ">
+                            <!-- Item Card 1 -->
+                            <div class="col-md-4 mb-4" th:each="listing , iter: ${likedItems}">
+                                <div class="card shadow-sm position-relative">
+
+                                    <!--                                    LIKED ICON -->
+                                    <i class="bi bi-heart-fill text-danger  position-absolute"
+                                       style="top:10px; right:10px; font-size:1.5rem; cursor:pointer; z-index:100;"
+                                       th:attr="data-id=${listing.id}"
+                                       data-user-id="2"
+                                       onclick="toggleLike(this)"></i>
+
+                                    <!-- Carousel -->
+                                    <div th:id="'carousel' +${iter.index}" class="carousel slide"
+                                         data-bs-ride="carousel">
+                                        <div class="carousel-inner">
+                                            <div class="carousel-item "
+                                                 th:each="img, imgStat : ${listing.listing.images}"
+                                                 th:class="'carousel-item' + (${imgStat.index} == 0 ? ' active' : '')">
+<!--                                                <img th:src="'data:image/png;base64,' + ${img.base64Image}" alt="Listing Image"/> working without this.-->
+                                                   <img th:src="@{'/images/' +${img.id}}"
+                                                     class="d-block w-100" alt="Item 1 image">
+                                            </div>
+                                        </div>
+                                        <button class="carousel-control-prev" type="button"
+                                                th:attr="data-bs-target='#carousel' + ${iter.index}"
+                                                data-bs-slide="prev">
+                                            <span class="carousel-control-prev-icon"></span>
+                                        </button>
+                                        <button class="carousel-control-next" type="button"
+                                                th:attr="data-bs-target='#carousel' + ${iter.index}"
+                                                data-bs-slide="next">
+                                            <span class="carousel-control-next-icon"></span>
+                                        </button>
+                                    </div>
+
+                                    <!-- Details -->
+                                    <div class="card-body">
+                                        <h5 class="card-title"><span
+                                                th:text="${listing.listing.companyName}"></span></h5>
+                                        <p class="card-text"><strong>Price:</strong> ₹<span
+                                                th:text="${listing.listing.price}"></span></p>
+                                        <p class="card-text"><strong>Color:</strong> <span
+                                                th:text="${listing.listing.color}"></span></p>
+                                        <p class="card-text"><strong>Condition:</strong> <span
+                                                th:text="${listing.listing.condition}"></span></p>
+                                        <p class="card-text text-muted small"><span
+                                                th:text="${listing.listing.description}"></span></p>
+
+                                        <a href="#" class="btn btn-success w-100 mt-2">
+                                            <i class="bi bi-cart-plus me-1"></i> Buy Now
+                                        </a>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+<!--                Liked-item code ends here.-->
+
+<!--                Profile code starts here-->
+
+                <div id="profile" class="dashboard-section" th:classappend="${activeTab}=='profile' ? 'active'">
+                    <h2>Profile section.</h2>
+
+
+                    <div class="container py-5">
+                        <div class="card shadow-lg border-0 rounded-4 mx-auto p-4" style="max-width: 840px;">
+                            <form th:action="@{/updateprofile}" method="put">
+
+                                <!-- PROFILE IMAGE SECTION -->
+                                <div class="text-center mb-4">
+                                    <img th:if="${user_master.profile_pic != null}" th:src="@{/userphoto}"
+                                         alt="Profile Picture"
+                                         class="rounded-circle border border-3 border-primary img-fluid"
+                                         style="width: 180px; height: 180px; object-fit: cover;">
+                                    <div th:unless="${user_master.profile_pic != null}">
+                                        <i class="bi bi-person-circle text-primary" style="font-size: 100px;"></i>
+                                    </div>
+                                    <h4 class="mt-3 fw-semibold">User Profile</h4>
+                                </div>
+
+                                <!-- PROFILE INFO SECTION -->
+                                <div class="px-3">
+                                    <h4 class="fw-bold mb-4 text-primary text-center">Profile Information</h4>
+
+                                    <div class="row">
+                                    <div class=" col-lg-6 mb-3">
+                                        <label class="form-label fw-bold">Name</label>
+                                        <input type="text" class="form-control" th:value="${user_master.name}" name="name">
+                                    </div>
+
+                                    <div class="col-lg-6 mb-3">
+                                        <label class="form-label fw-bold">Email</label>
+                                        <input type="email" class="form-control" th:value="${user_master.email}" name="email">
+                                    </div>
+                                    </div>
+                                    <div class="row">
+                                    <div class="col-lg-6 mb-3">
+                                        <label class="form-label fw-bold">Address</label>
+                                        <input type="text" class="form-control" th:value="${user_master.address}" name="address">
+                                    </div>
+
+                                    <div class="col-lg-6 mb-3">
+                                        <label class="form-label fw-bold">Contact</label>
+                                        <input type="text" class="form-control" th:value="${user_master.contact}" name="contact">
+                                    </div>
+                                    </div>
+                                    <!-- BUTTONS -->
+                                    <div class="d-flex justify-content-end gap-3 mt-4">
+                                        <button type="reset" class="btn btn-outline-secondary px-4">Reset</button>
+                                        <button type="submit" class="btn btn-success px-4">Update</button>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+
+
+                </div>
+<!--                profile code ends here -->
+
+                </div> <!-- /.row -->
+        </main>
+
+        <!-- Blank Right Column: col-lg-2 -->
+        <div class="col-lg-2 d-none d-lg-block"></div>
+
+    </div> <!-- /.row -->
+</div> <!-- /.container-fluid -->
+
+
+
+<!-- for popup -->
+
+<!--<div id="logoutPopup" class="logout-popup">-->
+<!--    <div class="logout-box">-->
+<!--        <p>Are you sure you want to log out?</p>-->
+<!--        <div class="logout-buttons">-->
+<!--            <button class="btn-yes" onclick="confirmLogout()">Yes</button>-->
+<!--            <button class="btn-cancel" onclick="closeLogoutPopup()">Cancel</button>-->
+<!--        </div>-->
+<!--    </div>-->
+<!--</div>-->
+
+<!-- js for passing item id to modal -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const purchaseModal = document.getElementById('purchaseitemInfo');
+
+      purchaseModal.addEventListener('show.bs.modal', function (event) {
+        const button = event.relatedTarget;
+        const itemId = button.getAttribute('data-itemid');
+        const inputField = purchaseModal.querySelector('#itemIdField');
+        inputField.value = itemId;
+    console.log("Selected itemId:", itemId);
+      });
+    });
+</script>
+
+<!-- Image Preview Script -->
+<script>
+    const input = document.getElementById('productImages');
+    const preview = document.querySelector('.preview');
+
+    if (input) {
+        input.addEventListener('change', () => {
+            preview.innerHTML = "";
+            Array.from(input.files).forEach(file => {
+                const reader = new FileReader();
+                reader.onload = e => {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    preview.appendChild(img);
+                }
+                reader.readAsDataURL(file);
+            });
+        });
+    }
+</script>
+
+<!-- Sidebar Tab Script -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const navLinks = document.querySelectorAll('.sidebar .nav-link');
+        const sections = document.querySelectorAll('.dashboard-section');
+
+        navLinks.forEach(link => {
+            link.addEventListener('click', function (e) {
+                e.preventDefault();
+                navLinks.forEach(l => l.classList.remove('active'));
+                this.classList.add('active');
+                sections.forEach(section => section.classList.remove('active'));
+                const targetId = this.getAttribute('href').substring(1);
+                const targetEl = document.getElementById(targetId);
+                if (targetEl) targetEl.classList.add('active');
+            });
+        });
+    });
+</script>
+
+
+<script>
+    function toggleLike(el) {
+    const listingId = el.getAttribute("data-id");
+    const userId = el.getAttribute("data-user-id"); // id from frontend
+
+    fetch(`/likes/${listingId}?userId=${userId}`, {
+        method: "POST"
+    })
+    .then(res => res.text())
+    .then(msg => {
+        console.log(msg);
+
+        el.classList.toggle("bi-heart");
+        el.classList.toggle("bi-heart-fill");
+        el.classList.toggle("text-danger");
+    })
+    .catch(err => console.error(err));
+}
+
+</script>
+
+
+<!--<script>-->
+<!--    function openLogoutPopup(event) {-->
+<!--        event.preventDefault();-->
+<!--        document.getElementById('logoutPopup').style.display = 'flex';-->
+<!--    }-->
+
+<!--    function closeLogoutPopup() {-->
+<!--        document.getElementById('logoutPopup').style.display = 'none';-->
+<!--    }-->
+
+<!--    function confirmLogout() {-->
+<!--        window.location.href = '/logout'; // triggers controller mapping-->
+<!--    }-->
+<!--</script>-->
+
+
+
+
+
+
+<!--logout popup easy one-->
+<script>
+    function confirmLogout(event) {
+        event.preventDefault(); // stops default navigation
+        const confirmed = confirm("Are you sure you want to log out?");
+        if (confirmed) {
+            window.location.href = '/logout'; // call your mapping
+        }
+    }
+</script>
+
+<!--Refresh thing for category -->
+<!--<script>-->
+<!--    window.addEventListener('load', function() {-->
+<!--      // If URL contains categoryId, remove it and reload once-->
+<!--      if (window.location.href.includes("categoryId")) {-->
+<!--        const baseUrl = window.location.origin + window.location.pathname;-->
+<!--        window.history.replaceState(null, "", baseUrl);-->
+<!--        window.location.href = baseUrl;  // reload clean page-->
+<!--      }-->
+<!--    });-->
+<!--</script>-->
+
+
+
+<!--<script>-->
+<!--    function toggleLike(el) {-->
+<!--        el.classList.toggle("bi-heart");-->
+<!--        el.classList.toggle('bi-heart-fill'); // solid heart when liked-->
+<!--        el.classList.toggle('text-danger');   // red color when liked-->
+<!--    }-->
+<!--</script>-->
+
+
+
+<!--<script>-->
+
+<!--    function toggleLike(el) {-->
+<!--    const listingId = el.getAttribute("data-id");-->
+
+<!--    fetch(`/likes/${listingId}`, {-->
+<!--        method: "POST",-->
+<!--        headers: {-->
+<!--            "Content-Type": "application/json"-->
+<!--        }-->
+<!--    })-->
+<!--    .then(res => res.text())-->
+<!--    .then(msg => {-->
+<!--        console.log(msg);-->
+
+<!--        // toggle UI after server response-->
+<!--        el.classList.toggle("bi-heart");-->
+<!--        el.classList.toggle("bi-heart-fill");-->
+<!--        el.classList.toggle("text-danger");-->
+<!--    })-->
+<!--    .catch(err => console.error(err));-->
+<!--}-->
+
+
+<!--</script>-->
+
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>
