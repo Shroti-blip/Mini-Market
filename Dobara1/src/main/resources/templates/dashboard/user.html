@@ -271,6 +271,8 @@
                             class="bi bi-heart me-2"></i>Liked Items</a></li>
                     <li class="nav-item"><a class="nav-link" href="#feedback"><i
                             class="bi bi-chat-left-text me-2"></i>Feedback</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#notification"><i
+                            class="bi bi-chat-left-text me-2"></i>Notification</a></li>
                     <li class="nav-item"><a class="nav-link" href="#profile"><i
                             class="bi bi-person-circle me-2"></i>Profile</a></li>
                     <li class="nav-item">
@@ -472,110 +474,25 @@
                                                 th:text="${listing.color}"></span></p>
                                         <p class="card-text"><strong>Condition:</strong> <span
                                                 th:text="${listing.condition}"></span></p>
-                                        <p class="card-text text-muted small"><span
-                                                th:text="${listing.description}"></span></p>
-                                        <button type="button"
+<!--                                        <p class="card-text text-muted small"><span-->
+<!--                                                th:text="${listing.description}"></span></p>-->
+<!--                                        More info button-->
+                                        <form th:action="@{/moreinfo}" th:method="get">
+                                        <button type="submit" name="itemId" th:value="${listing.id}"
                                                 class="btn btn-success w-100 mt-2"
-                                                th:attr="data-itemid=${listing.id}"
-                                                data-bs-toggle="modal"
-                                                data-bs-target="#purchaseitemInfo">
-                                            <i class="bi bi-cart-plus me-1"></i> Buy Now
+                                                th:attr="data-itemid=${listing.id}">
+<!--                                                data-bs-toggle="modal"-->
+<!--                                                data-bs-target="#purchaseitemInfo">-->
+                                            <i class="bi bi-cart-plus me-1"></i> More info
                                         </button>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-<!--                    code for purchase popup  starts here-->
-
-                    <div class="modal fade" id="purchaseitemInfo" tabindex="-1" aria-labelledby="purchaseitemmodal" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered modal-lg">
-                            <div class="modal-content border-0 rounded-4 shadow-lg">
-
-                                <div class="modal-header bg-success text-white">
-                                    <h5 class="modal-title fw-bold" id="purchaseitemmodal">Confirm Your Purchase</h5>
-                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
-                                </div>
-
-                                <div class="modal-body">
-                                    <div class="container">
-                                        <form th:action="@{/purchase}" method="post" th:object="${purchase}">
-
-                                            <input type="hidden" id="itemIdField" name="itemId">
-                                            <!-- ITEM SUMMARY -->
-                                            <div class="text-center mb-4">
-                                                <div class="p-3 bg-light rounded-3">
-<!--                                                    <p class="mb-1">Price: ₹<span th:text="${listdata.price}"></span></p>-->
-                                                    <div class="d-flex justify-content-center align-items
-                                                    -center gap-2">
-                                                        <label class="fw-semibold">Quantity:</label>
-                                                        <input type="number" class="form-control" name="quantity" th:field="*{quantity}"
-                                                               value="1" min="1" style="width: 80px;">
-                                                    </div>
-                                                    <!-- <input type="hidden" th:value="${listing.id}" name="itemId"> -->
-                                                </div>
-                                            </div>
-
-                                            <!-- USER INFO -->
-                                            <h5 class="fw-bold text-secondary mb-3">Customer Information</h5>
-
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Full Name</label>
-                                                <input type="text" class="form-control" name="name" th:value="${user_master.name}" required>
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Email</label>
-                                                <input type="email" class="form-control" name="email" th:value="${user_master.email}" required>
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Contact Number</label>
-                                                <input type="text" class="form-control" name="contact" th:value="${user_master.contact}" required>
-                                            </div>
-
-                                            <div class="mb-3">
-                                                <label class="form-label fw-bold">Delivery Address</label>
-                                                <textarea class="form-control" name="address" rows="3" th:text="${user_master.address}" required></textarea>
-                                            </div>
-
-                                            <!-- PAYMENT INFO -->
-                                            <h5 class="fw-bold text-secondary mb-3">Payment Method</h5>
-                                            <div class="mb-3">
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="radio"  name="mode" value="COD" id="cod" checked>
-                                                    <label class="form-check-label fw-semibold" for="cod">
-                                                        Cash on Delivery (COD)
-                                                    </label>
-                                                </div>
-                                                <div class="form-check">
-                                                    <input class="form-check-input" type="radio"  name="mode" value="Online" id="online">
-                                                    <label class="form-check-label fw-semibold" for="online">
-                                                        Online Payment
-                                                    </label>
-                                                </div>
-                                            </div>
-
-                                            <!-- BUTTONS -->
-                                            <div class="d-flex justify-content-end gap-3 mt-4">
-                                                <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">Cancel</button>
-                                                <button type="submit" class="btn btn-success px-4"
-                                                        onclick="return confirm('Are you sure you want to confirm this purchase?');">
-                                                    Confirm Purchase</button>
-                                            </div>
-
                                         </form>
+
                                     </div>
                                 </div>
-
                             </div>
                         </div>
                     </div>
 
-
-                    <!--                    code for purchse popup ends here-->
 
                 </div>
 
@@ -923,6 +840,18 @@
                 </div>
 <!--                Liked-item code ends here.-->
 
+<!--                Code for Notification starts here-->
+
+                <div id="notification" class="dashboard-section" th:classappend="${activeTab}=='notification' ? 'active'">
+
+                    <h2>Notification section.</h2>
+
+                    
+
+                </div>
+
+                    <!--                code for Notification ends here-->
+
 <!--                Profile code starts here-->
 
                 <div id="profile" class="dashboard-section" th:classappend="${activeTab}=='profile' ? 'active'">
@@ -1009,20 +938,7 @@
 <!--    </div>-->
 <!--</div>-->
 
-<!-- js for passing item id to modal -->
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
-      const purchaseModal = document.getElementById('purchaseitemInfo');
 
-      purchaseModal.addEventListener('show.bs.modal', function (event) {
-        const button = event.relatedTarget;
-        const itemId = button.getAttribute('data-itemid');
-        const inputField = purchaseModal.querySelector('#itemIdField');
-        inputField.value = itemId;
-    console.log("Selected itemId:", itemId);
-      });
-    });
-</script>
 
 <!-- Image Preview Script -->
 <script>
