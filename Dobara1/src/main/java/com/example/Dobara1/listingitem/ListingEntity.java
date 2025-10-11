@@ -4,6 +4,7 @@ package com.example.Dobara1.listingitem;
 import com.example.Dobara1.category.CategoryEntity;
 import com.example.Dobara1.images.ImageEntity;
 import com.example.Dobara1.likeditems.LikedEntity;
+import com.example.Dobara1.purchase.PurchaseEntity;
 import com.example.Dobara1.usermaster.UserMasterEntity;
 //import com.example.dobara.category.CategoryEntity;
 //import com.example.dobara.images.ImageEntity;
@@ -76,7 +77,7 @@ public class ListingEntity {
     }
 
     // category relation
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "cat_id", referencedColumnName = "cat_id")
     private CategoryEntity category;
 
@@ -95,6 +96,9 @@ public class ListingEntity {
     public void setLikedItems(List<LikedEntity> likedItems) {
         this.likedItems = likedItems;
     }
+
+    @OneToMany(mappedBy = "listingEntity" , cascade = CascadeType.ALL, orphanRemoval = true)
+    List<PurchaseEntity> purchaseEntities ;
 
     @OneToMany(mappedBy = "listing", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<LikedEntity> likedItems;
