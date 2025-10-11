@@ -4,10 +4,12 @@ import com.example.Dobara1.category.CategoryEntity;
 import com.example.Dobara1.category.CategoryRepository;
 import com.example.Dobara1.images.ImageEntity;
 import com.example.Dobara1.images.ImageRepository;
+import com.example.Dobara1.purchase.PurchaseEntity;
 import com.example.Dobara1.usermaster.UserMasterEntity;
 import com.example.Dobara1.usermaster.UserRepo;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.Banner;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -77,6 +79,46 @@ public String showUserItems(Model model , HttpSession session){
 }
 
 
+
+    //usefull
+    @GetMapping("images/{id}")
+    public ResponseEntity<byte[]> getImage(@PathVariable int id ){
+        ImageEntity imageEntity = imageRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Image not found"));
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(imageEntity.getImage());
+    }
+
+    @GetMapping("/moreinfo")
+    public String getMoreInfo(@RequestParam("itemId") int itemId ,
+                              Model model , HttpSession session){
+        ListingEntity list = listingRepository.findById(itemId)
+                        .orElseThrow(() -> new RuntimeException("Not Found"));
+//        if (list != null && list.getCategory() != null) {
+//            list.getCategory().getName(); // forces loading
+//        }
+        model.addAttribute("listing" , list);
+
+
+//      add a model obj for purchase entity like for saving data.
+        model.addAttribute("purchase" , new PurchaseEntity());
+
+        Integer userId = (Integer) session.getAttribute("user_id");
+        UserMasterEntity userMaster= userRepo.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+        model.addAttribute("user_master" , userMaster);
+        return "listingitem/moreinfo";
+    }
+
+
+
+//    private String type; if problem related to image type then use that method.
+//     .contentType(MediaType.parseMediaType(imageEntity.getType()))
+
+
+
+
 //    @GetMapping("/showallitems1")
 //    public String showAllItems(Model model, HttpSession session) {
 //        Integer userId = (Integer) session.getAttribute("user_id");
@@ -103,25 +145,6 @@ public String showUserItems(Model model , HttpSession session){
 //        System.out.println("list data is : " + list);
 //        return "redirect:/user/dashboard";
 //    }
-
-
-    //usefull
-    @GetMapping("images/{id}")
-    public ResponseEntity<byte[]> getImage(@PathVariable int id){
-        ImageEntity imageEntity = imageRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Image not found"));
-        return ResponseEntity.ok()
-                .contentType(MediaType.IMAGE_JPEG)
-                .body(imageEntity.getImage());
-    }
-
-
-
-//    private String type; if problem related to image type then use that method.
-//     .contentType(MediaType.parseMediaType(imageEntity.getType()))
-
-
-
 
 
 
