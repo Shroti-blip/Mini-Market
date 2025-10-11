@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Document</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" rel="stylesheet">
+
+</head>
+<body>
+
+<div class="container mt-5 mb-5">
+  <div class="row">
+    <!-- Image Carousel Section -->
+    <div class="col-md-7">
+      <div id="itemCarousel" class="carousel slide shadow-sm rounded" data-bs-ride="carousel">
+        <div class="carousel-inner">
+          <div class="carousel-item"
+               th:each="img, imgStat : ${listing.images}"
+               th:class="'carousel-item' + (${imgStat.index} == 0 ? ' active' : '')">
+            <img th:src="@{'/images/' + ${img.id}}"
+                 class="d-block w-100 rounded"
+                 style="height: 450px; object-fit: cover;"
+                 alt="Product Image">
+          </div>
+        </div>
+        <button class="carousel-control-prev" type="button" data-bs-target="#itemCarousel" data-bs-slide="prev">
+          <span class="carousel-control-prev-icon"></span>
+        </button>
+        <button class="carousel-control-next" type="button" data-bs-target="#itemCarousel" data-bs-slide="next">
+          <span class="carousel-control-next-icon"></span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Product Details Section -->
+    <div class="col-md-5">
+      <div class="card border-0 shadow-sm p-4">
+        <h3 class="mb-3" th:text="${listing.companyName}">Company Name</h3>
+
+        <p class="fs-5 mb-1"><strong>Price:</strong> ₹<span th:text="${listing.price}"></span></p>
+        <p><strong>Color:</strong> <span th:text="${listing.color}"></span></p>
+        <p><strong>Condition:</strong> <span th:text="${listing.condition}"></span></p>
+        <p><strong>Posted by:</strong> <span th:text="${listing.user.name}"></span></p>
+
+        <hr>
+        <p class="text-muted" style="line-height: 1.7;">
+          <strong>Description:</strong> <br>
+          <span th:text="${listing.description}"></span>
+        </p>
+
+        <div class="d-flex gap-3 mt-4">
+          <button class="btn btn-success flex-fill"
+                  th:attr="data-itemid=${listing.id}"
+                  data-bs-toggle="modal"
+                  data-bs-target="#purchaseitemInfo">
+            <i class="bi bi-info-circle me-2"></i> More Info
+          </button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- You can add more details below like seller info, location, etc. -->
+  <div class="row mt-5">
+    <div class="col-md-8">
+      <div class="card p-4 shadow-sm">
+        <h5>Additional Details</h5>
+        <p><strong>Category:</strong> <span th:text="${listing.category.name}"></span></p>
+<!--        <p><strong>Date Listed:</strong> <span th:text="${#temporals.format(listing.createdDate, 'dd MMM yyyy')}"></span></p>-->
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!--purchase popup starts here -->
+
+<div class="modal fade" id="purchaseitemInfo" tabindex="-1" aria-labelledby="purchaseitemmodal" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content border-0 rounded-4 shadow-lg">
+
+      <div class="modal-header bg-success text-white">
+        <h5 class="modal-title fw-bold" id="purchaseitemmodal">Confirm Your Purchase</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+
+      <div class="modal-body">
+        <div class="container">
+          <form th:action="@{/purchase}" method="post" th:object="${purchase}">
+
+            <input type="hidden" id="itemIdField" name="itemId">
+            <!-- ITEM SUMMARY -->
+            <div class="text-center mb-4">
+              <div class="p-3 bg-light rounded-3">
+                <!--                                                    <p class="mb-1">Price: ₹<span th:text="${listdata.price}"></span></p>-->
+                <div class="d-flex justify-content-center align-items
+                                                    -center gap-2">
+                  <label class="fw-semibold">Quantity:</label>
+                  <input type="number" class="form-control" name="quantity" th:field="*{quantity}"
+                         value="1" min="1" style="width: 80px;">
+                </div>
+                <!-- <input type="hidden" th:value="${listing.id}" name="itemId"> -->
+              </div>
+            </div>
+
+            <!-- USER INFO -->
+            <h5 class="fw-bold text-secondary mb-3">Customer Information</h5>
+
+            <div class="mb-3">
+              <label class="form-label fw-bold">Full Name</label>
+              <input type="text" class="form-control" name="name" th:value="${user_master.name}" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-bold">Email</label>
+              <input type="email" class="form-control" name="email" th:value="${user_master.email}" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-bold">Contact Number</label>
+              <input type="text" class="form-control" name="contact" th:value="${user_master.contact}" required>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label fw-bold">Delivery Address</label>
+              <textarea class="form-control" name="address" rows="3" th:text="${user_master.address}" required></textarea>
+            </div>
+
+            <!-- PAYMENT INFO -->
+            <h5 class="fw-bold text-secondary mb-3">Payment Method</h5>
+            <div class="mb-3">
+              <div class="form-check">
+                <input class="form-check-input" type="radio"  name="mode" value="COD" id="cod" checked>
+                <label class="form-check-label fw-semibold" for="cod">
+                  Cash on Delivery (COD)
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio"  name="mode" value="Online" id="online">
+                <label class="form-check-label fw-semibold" for="online">
+                  Online Payment
+                </label>
+              </div>
+            </div>
+
+            <!-- BUTTONS -->
+            <div class="d-flex justify-content-end gap-3 mt-4">
+              <button type="button" class="btn btn-outline-secondary px-4" data-bs-dismiss="modal">Cancel</button>
+              <button type="submit" class="btn btn-success px-4"
+                      onclick="return confirm('Are you sure you want to confirm this purchase?');">
+                Confirm Purchase</button>
+            </div>
+
+          </form>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!--purchase popup ends here.-->
+
+
+<!-- js for passing item id to modal -->
+<script>
+  document.addEventListener('DOMContentLoaded', function () {
+    const purchaseModal = document.getElementById('purchaseitemInfo');
+
+    purchaseModal.addEventListener('show.bs.modal', function (event) {
+      const button = event.relatedTarget;
+      const itemId = button.getAttribute('data-itemid');
+      const inputField = purchaseModal.querySelector('#itemIdField');
+      inputField.value = itemId;
+  console.log("Selected itemId:", itemId);
+    });
+  });
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+
+
+</body>
+</html>
