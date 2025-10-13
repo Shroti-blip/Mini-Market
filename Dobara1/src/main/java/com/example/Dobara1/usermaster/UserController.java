@@ -8,6 +8,8 @@ import com.example.Dobara1.likeditems.LikedRepository;
 import com.example.Dobara1.listingitem.ListingEntity;
 import com.example.Dobara1.listingitem.ListingRepository;
 import com.example.Dobara1.purchase.PurchaseEntity;
+import com.example.Dobara1.reportitems.ReportEntity;
+import com.example.Dobara1.reportitems.ReportRepository;
 import jakarta.servlet.http.HttpSession;
 import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.management.relation.Role;
 import java.util.Base64;
@@ -44,6 +47,8 @@ public class UserController {
     ListingRepository listingRepository;
     @Autowired
     LikedRepository likedRepository;
+    @Autowired
+    ReportRepository reportRepository;
 
     @GetMapping("/getregister")
     public String getPage(Model model){
@@ -141,12 +146,31 @@ public class UserController {
 //        for showing all items
         List<ListingEntity> list = listingRepository.findAll();
         model.addAttribute("listdata" , list);
-        
+
         return "dashboard/admin";
     }
 
+//    @PostMapping("/admin/removeitem")
+//    public String removeItem(@RequestParam("itemId") int itemId,
+//                             @RequestParam("reason") String reason,
+//                             RedirectAttributes redirectAttributes) {
+//        try {
+//
+//            listingRepository.deleteById(itemId);
+//            System.out.println("Item ID " + itemId + " removed by admin. Reason: " + reason);
+//
+//            // Flash message for dashboard
+//            redirectAttributes.addFlashAttribute("message", "Item removed successfully!");
+//        } catch (Exception e) {
+//            redirectAttributes.addFlashAttribute("error", "Failed to remove item. Please try again.");
+//            e.printStackTrace();
+//        }
+//
+//        return "redirect:/admin/dashboard";
+//    }
 
-//    User Dashboard .
+
+    //    User Dashboard .
     @GetMapping("/user/dashboard")
     public String getUserDashboard(HttpSession session , Model model ,
                                    @RequestParam(name = "categoryId", required = false) Integer categoryId){
@@ -208,12 +232,35 @@ public class UserController {
 
 //      add a model obj for purchase entity like for saving data.
         model.addAttribute("purchase" , new PurchaseEntity());
+
+//         for showing reported items
+        List<ReportEntity> reportEntity =  reportRepository.findByListing_User_Id(userId);
+        System.out.println("Report : ===========================================");
+
+        model.addAttribute("reports" , reportEntity);
+
         // default tab = upload
         model.addAttribute("activeSellTab", "upload");
 
         return "dashboard/user";
     }
 
+
+    @GetMapping("/user/findbycategory")
+    public String getById(Model model,
+                          @RequestParam(name = "categoryId", required = false) Integer categoryId){
+        if(categoryId != null){
+            List<ListingEntity> list = listingRepository.findByCategoryId(categoryId);
+            model.addAttribute("listdata" , list);
+            System.out.println("Inside category one");
+        }
+        else{
+            List<ListingEntity> list = listingRepository.findAll();
+            model.addAttribute("listdata" , list);
+            System.out.println("For finding all");
+        }
+        return "redirect:/user/dashboard?categoryId=" + categoryId;
+    }
 
 
 
