@@ -78,8 +78,6 @@ public String showUserItems(Model model , HttpSession session){
         return "listingitem/showallitems";
 }
 
-
-
     //usefull
     @GetMapping("images/{id}")
     public ResponseEntity<byte[]> getImage(@PathVariable int id ){
