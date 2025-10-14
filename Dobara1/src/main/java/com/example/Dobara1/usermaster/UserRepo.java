@@ -8,4 +8,5 @@ public interface UserRepo extends JpaRepository<UserMasterEntity, Integer> {
     Optional<UserMasterEntity> findByEmailAndPassword(String email , String password);
 //    Optional<UserMasterEntity> existsByEmail(String email);
 Optional<UserMasterEntity> findByEmail(String email);
+//Optional<UserMasterEntity> findByRole(String role);
 }
