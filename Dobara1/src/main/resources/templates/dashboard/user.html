@@ -15,7 +15,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-
         :root {
             --primary-color: #00A859;
             --secondary-color: #007A43;
@@ -61,14 +60,14 @@
             display: block;
         }
 
-             .navbar-brand {
+        .navbar-brand {
             font-size: 1.3rem;
             font-weight: bold;
             color: var(--primary-color) !important;
         }
 
-        .text-color{
-        color: var(--primary-color) !important;
+        .text-color {
+            color: var(--primary-color) !important;
         }
 
 
@@ -119,80 +118,90 @@
         }
 
 
-<!--        popup css  -->
-        <style>
-.logout-popup {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.4);
-    z-index: 999;
-    justify-content: center;
-    align-items: center;
-}
 
-.logout-box {
-    background: #fff;
-    padding: 25px 35px;
-    border-radius: 15px;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.2);
-    text-align: center;
-    transition: all 0.3s ease;
-    animation: fadeIn 0.3s;
-}
+        .logout-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.4);
+            z-index: 999;
+            justify-content: center;
+            align-items: center;
+        }
 
-.logout-buttons {
-    margin-top: 15px;
-    display: flex;
-    justify-content: center;
-    gap: 15px;
-}
+        .logout-box {
+            background: #fff;
+            padding: 25px 35px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            transition: all 0.3s ease;
+            animation: fadeIn 0.3s;
+        }
 
-.btn-yes, .btn-cancel {
-    padding: 8px 18px;
-    border: none;
-    border-radius: 25px;
-    cursor: pointer;
-    font-weight: 500;
-}
+        .logout-buttons {
+            margin-top: 15px;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+        }
 
-.btn-yes {
-    background-color: #0d6efd;
-    color: white;
-}
+        .btn-yes,
+        .btn-cancel {
+            padding: 8px 18px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 500;
+        }
 
-.btn-cancel {
-    background-color: #dc3545;
-    color: white;
-}
+        .btn-yes {
+            background-color: #0d6efd;
+            color: white;
+        }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: scale(0.9); }
-    to { opacity: 1; transform: scale(1); }
-}
+        .btn-cancel {
+            background-color: #dc3545;
+            color: white;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
 
 
         .carousel-img {
-    height: 200px;           /* fixed height */
-    object-fit: cover;       /* crops image if aspect ratio is different */
-}
+            height: 200px;
+            /* fixed height */
+            object-fit: cover;
+            /* crops image if aspect ratio is different */
+        }
 
         .carousel-inner {
-    height: 200px;  /* same as image height */
-}
+            height: 200px;
+            /* same as image height */
+        }
 
         @media (max-width: 768px) {
-    .carousel-img {
-        height: 150px;
-    }
-    .carousel-inner {
-        height: 150px;
-    }
-}
+            .carousel-img {
+                height: 150px;
+            }
 
+            .carousel-inner {
+                height: 150px;
+            }
+        }
     </style>
 
 
@@ -202,6 +211,7 @@
 
 <body>
 
+<!--navigation-->
 <nav class="navbar navbar-dark sticky-top bg-light flex-md-nowrap p-2 shadow">
     <div class="container-fluid">
         <a class="navbar-brand d-flex align-items-center" href="#">
@@ -245,6 +255,7 @@
     </div>
 </nav>
 
+<!--Sidebar -->
 <div class="container-fluid">
     <div class="row">
 
@@ -316,7 +327,7 @@
                                     <div class="card-body">
                                         <i class="bi bi-bag-check display-5 text-success"></i>
                                         <h6 class="mt-2">Purchases</h6>
-                                        <p class="fs-4 fw-bold"><span>0</span></p>
+                                        <p class="fs-4 fw-bold"><span th:text="${totalPurchase}"></span></p>
                                     </div>
                                 </div>
                             </div>
@@ -386,8 +397,7 @@
                         </div>
                     </div>
 
-
-                </div>
+                     </div>
 
                 <!-- Purchase Section -->
                 <div id="purchase" class="dashboard-section" th:classappend="${activeTab}=='purchase' ? 'active'">
@@ -398,7 +408,8 @@
 
                             <!-- Search by Category -->
                             <div class="col-md-5 ">
-                                <form th:action="@{/user/dashboard}" method="get" id="categoryForm" class="d-flex">
+<!--                                that form action is of no use -->
+                                <form th:action="@{/user/findbycategory}" method="get" id="categoryForm" class="d-flex">
 <!--                                     name="categoryId" -->
                                     <select class="form-select me-2" name="categoryId" onchange="this.form.submit()">
                                         <option value="">-- Select Category --</option>
@@ -406,7 +417,7 @@
                                         <option th:each="cat : ${categorydata}"
                                                 th:value="${cat.cat_id}"
                                                 th:text="${cat.name}"></option>
-<!--                                                  th:value="${cat.cat_id}" without this is still woriking.-->
+<!--                                                  th:value="${cat.cat_id}" without this is still working.-->
                                     </select>
 <!--                                    <button type="submit"  class="btn btn-primary">Search</button>-->
                                 </form>
@@ -836,21 +847,152 @@
                         </div>
                     </div>
 
-
                 </div>
 <!--                Liked-item code ends here.-->
+
+<!--                Code for feedback starts here  -->
+
+                <div id="feedback" class="dashboard-section" th:classappend="${activeTab}=='feedback' ? ' active'">
+                    <div class="container py-5 d-flex justify-content-center">
+
+                        <div class="card shadow-sm w-100 bg-light" style="max-width: 940px;">
+                        <div class="card-header ">
+                                <h4 class="mb-0 text-center">📝 Give Feedback</h4>
+                            </div>
+                            <div class="card-body">
+
+                                <form th:action="@{/submitFeedback}" method="post">
+
+                                    <!-- Rating -->
+                                    <div class="mb-3">
+                                        <label for="rating" class="form-label"><strong>Rating:</strong></label>
+                                        <select class="form-select" id="rating" name="rating" required>
+                                            <option value="" disabled selected>Select your rating</option>
+                                            <option value="Excellent">Excellent</option>
+                                            <option value="Good">Good</option>
+                                            <option value="Average">Average</option>
+                                            <option value="Poor">Poor</option>
+                                        </select>
+                                    </div>
+
+                                    <!-- Comments -->
+                                    <div class="mb-3">
+                                        <label for="comments" class="form-label"><strong>Comments:</strong></label>
+                                        <textarea class="form-control" id="comments" name="comments" rows="3" placeholder="Share your thoughts..." required></textarea>
+                                    </div>
+
+                                    <!-- Offensive content (optional) -->
+                                    <div class="mb-3">
+                                        <label for="offensive" class="form-label"><strong>Flag Offensive Content:</strong>
+                                            <small class="text-muted">(Optional)</small>
+                                        </label>
+                                        <input type="text" class="form-control" id="offensive" name="offensive" placeholder="Mention if something inappropriate">
+                                    </div>
+
+                                    <!-- Hidden user_id field -->
+                                    <input type="hidden" name="user_id" th:value="${session.user_id}" />
+
+                                    <!-- Submit button -->
+                                    <div class="d-grid">
+                                        <button type="submit" class="btn btn-success btn-lg">Submit Feedback</button>
+                                    </div>
+
+                                </form>
+
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+
+                <!--                Code for feedback ends here-->
 
 <!--                Code for Notification starts here-->
 
                 <div id="notification" class="dashboard-section" th:classappend="${activeTab}=='notification' ? 'active'">
 
-                    <h2>Notification section.</h2>
+<!--                    report or purchase info code starts here-->
 
-                    
+                    <!-- ==============================
+                         Reported & Purchased Items Page
+                         ============================== -->
 
-                </div>
+                    <div class="container py-5">
 
-                    <!--                code for Notification ends here-->
+                        <h2 class="text-center mb-5">🧾 User Activity Summary</h2>
+
+                        <!-- Reported Items Section -->
+                        <h4 class="border-bottom pb-2 mb-4 text-danger">🚫 Reported Items</h4>
+
+                        <div class="row">
+                            <div class="col-12" th:if="${#lists.isEmpty(reports)}">
+                                <p class="text-center text-muted">No reported items found.</p>
+                            </div>
+
+                            <!-- Loop through reports -->
+                            <div class="col-sm-6 mb-4" th:each="report : ${reports}">
+                                <div class="card shadow-sm h-100">
+                                    <div class="card-body position-relative">
+
+                                        <!-- Red badge -->
+                                        <span class="badge bg-danger position-absolute top-0 end-0 mt-2 me-2">Reported</span>
+
+                                        <h5 class="card-title text-primary">
+                                            <i class="bi bi-box-seam me-1"></i>
+                                            <span th:text="${report.listing.companyName}">Company Name</span>
+                                        </h5>
+
+                                        <p class="text-muted small mb-2">
+                                            <i class="bi bi-tag me-1"></i>
+                                            <span th:text="${report.listing.category.name}">Category</span>
+                                        </p>
+
+                                        <p class="mb-1"><strong>Reason:</strong> <span th:text="${report.reason}">Inappropriate content</span></p>
+                                        <p class="mb-0"><strong>Date:</strong> <span th:text="${#temporals.format(report.reportDate, 'dd MMM yyyy')}">12 Oct 2025</span></p>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Purchased Items Section -->
+                        <h4 class="border-bottom pb-2 mb-4 text-success mt-5">💰 Purchased Items By Customers</h4>
+
+                        <div class="row">
+                            <div class="col-12" th:if="${#lists.isEmpty(purchasedItems)}">
+                                <p class="text-center text-muted">No purchases yet.</p>
+                            </div>
+
+                            <!-- Loop through purchased items -->
+                            <div class="col-sm-6 mb-4" th:each="purchase : ${purchasedItems}">
+                                <div class="card shadow-sm h-100 bg-light">
+                                    <div class="card-body position-relative">
+
+                                        <!-- Green badge -->
+                                        <span class="badge bg-success position-absolute top-0 end-0 mt-2 me-2">Purchased</span>
+
+                                        <h5 class="card-title text-success">
+                                            <i class="bi bi-bag-check me-1"></i>
+                                            <span th:text="${purchase.listingEntity.companyName}">Product Name</span>
+                                        </h5>
+
+                                        <p class="mb-2"><strong>User Name:</strong> <span th:text="${purchase.listingEntity.user.name}"></span></p>
+                                        <p class="small mb-2"><strong>User Email:</strong> <span th:text="${purchase.listingEntity.user.email}"></span></p>
+                                        <p class="mb-2"><strong>User Contact:</strong> <span th:text="${purchase.listingEntity.user.contact}"></span></p>
+                                        <p class="mb-0"><strong>Date:</strong> <span th:text="${#temporals.format(purchase.purchase_date, 'dd MMM yyyy')}"></span></p>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+
+                    <!--                    report or purchase info code ends here-->
+
+                    </div>
+
+                    <!--       code for Notification ends here-->
 
 <!--                Profile code starts here-->
 
@@ -910,8 +1052,6 @@
                         </div>
                     </div>
 
-
-
                 </div>
 <!--                profile code ends here -->
 
@@ -963,31 +1103,82 @@
 
 <!-- Sidebar Tab Script -->
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const navLinks = document.querySelectorAll('.sidebar .nav-link');
-        const sections = document.querySelectorAll('.dashboard-section');
 
-        navLinks.forEach(link => {
-            link.addEventListener('click', function (e) {
-                e.preventDefault();
-                navLinks.forEach(l => l.classList.remove('active'));
-                this.classList.add('active');
-                sections.forEach(section => section.classList.remove('active'));
-                const targetId = this.getAttribute('href').substring(1);
-                const targetEl = document.getElementById(targetId);
-                if (targetEl) targetEl.classList.add('active');
-            });
-        });
-    });
+    document.addEventListener('DOMContentLoaded', function () {
+     const navLinks = document.querySelectorAll('#sidebarMenu .nav-link');
+     const sections = document.querySelectorAll('.dashboard-section');
+     const sidebar = document.getElementById('sidebarMenu');
+
+     // Function to activate a section
+     function activateSection(targetId) {
+         // Remove active from all links and sections
+         navLinks.forEach(l => l.classList.remove('active'));
+         sections.forEach(section => section.classList.remove('active'));
+
+         // Find the target link and section
+         const targetLink = document.querySelector(`#sidebarMenu .nav-link[href="#${targetId}"]`);
+         const targetSection = document.getElementById(targetId);
+
+         if (targetLink && targetSection) {
+             targetLink.classList.add('active');
+             targetSection.classList.add('active');
+         }
+     }
+
+     // Handle sidebar clicks
+     navLinks.forEach(link => {
+         link.addEventListener('click', function (e) {
+             e.preventDefault(); // Prevent default scroll
+             const targetId = this.getAttribute('href').substring(1);
+             activateSection(targetId);
+
+             // Collapse sidebar on small screens
+             if (window.innerWidth < 992 && sidebar) {
+                 const collapseInstance = bootstrap.Collapse.getOrCreateInstance(sidebar);
+                 collapseInstance.hide();
+             }
+
+             // Update URL hash
+             history.replaceState(null, null, `#${targetId}`);
+         });
+     });
+
+     const currentHash = window.location.hash;
+     if (currentHash) {
+         const targetId = currentHash.substring(1);
+         activateSection(targetId);
+     } else {
+         activateSection('home'); // Default
+     }
+ });
+
+   /*  document.addEventListener('DOMContentLoaded', function () {
+         const navLinks = document.querySelectorAll('.sidebar .nav-link');
+         const sections = document.querySelectorAll('.dashboard-section');
+
+         navLinks.forEach(link => {
+             link.addEventListener('click', function (e) {
+                 e.preventDefault();
+                 navLinks.forEach(l => l.classList.remove('active'));
+                 this.classList.add('active');
+                 sections.forEach(section => section.classList.remove('active'));
+                 const targetId = this.getAttribute('href').substring(1);
+                 const targetEl = document.getElementById(targetId);
+                 if (targetEl) targetEl.classList.add('active');
+             });
+         });
+     });
+
+     */
 </script>
 
-
+<!--Liked item script-->
 <script>
     function toggleLike(el) {
     const listingId = el.getAttribute("data-id");
     const userId = el.getAttribute("data-user-id"); // id from frontend
 
-    fetch(`/likes/${listingId}?userId=${userId}`, {
+    fetch(`/likes/${listingId}?userId=${userId}`, {//fetch(`/likes?listingId=${listingId}&userId=${userId}`alternative
         method: "POST"
     })
     .then(res => res.text())
