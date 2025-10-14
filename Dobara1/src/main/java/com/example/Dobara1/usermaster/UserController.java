@@ -2,12 +2,15 @@ package com.example.Dobara1.usermaster;
 
 import com.example.Dobara1.category.CategoryEntity;
 import com.example.Dobara1.category.CategoryRepository;
+import com.example.Dobara1.feedback.FeedbackEntity;
+import com.example.Dobara1.feedback.FeedbackRepository;
 import com.example.Dobara1.images.ImageEntity;
 import com.example.Dobara1.likeditems.LikedEntity;
 import com.example.Dobara1.likeditems.LikedRepository;
 import com.example.Dobara1.listingitem.ListingEntity;
 import com.example.Dobara1.listingitem.ListingRepository;
 import com.example.Dobara1.purchase.PurchaseEntity;
+import com.example.Dobara1.purchase.PurchaseRepository;
 import com.example.Dobara1.reportitems.ReportEntity;
 import com.example.Dobara1.reportitems.ReportRepository;
 import jakarta.servlet.http.HttpSession;
@@ -18,14 +21,12 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.management.relation.Role;
+import java.beans.FeatureDescriptor;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
@@ -49,6 +50,11 @@ public class UserController {
     LikedRepository likedRepository;
     @Autowired
     ReportRepository reportRepository;
+    @Autowired
+    PurchaseRepository purchaseRepository;
+    @Autowired
+    FeedbackRepository feedbackRepository;
+
 
     @GetMapping("/getregister")
     public String getPage(Model model){
@@ -134,7 +140,7 @@ public class UserController {
 
 
     @GetMapping("/admin/dashboard")
-    public String getAdminDashboard(HttpSession session , Model model){
+    public String getAdminDashboard(HttpSession session , Model model ){
         Integer userId = (Integer) session.getAttribute("user_id");
         UserMasterEntity userMaster = userRepo.findById(userId).orElse(null);
         if(userMaster == null){
@@ -143,31 +149,30 @@ public class UserController {
         }
         model.addAttribute("user_master" , userMaster);
 
-//        for showing all items
+//        For showing all items
         List<ListingEntity> list = listingRepository.findAll();
         model.addAttribute("listdata" , list);
+
+//        For showing all user
+        List<UserMasterEntity> userMasterEntityList = userRepo.findAll();
+        model.addAttribute("allusers" , userMasterEntityList);
+
+
+//        For showing Feedback
+        List<FeedbackEntity> feedbacks = feedbackRepository.findAll();
+        model.addAttribute("feedbacks", feedbacks);
 
         return "dashboard/admin";
     }
 
-//    @PostMapping("/admin/removeitem")
-//    public String removeItem(@RequestParam("itemId") int itemId,
-//                             @RequestParam("reason") String reason,
-//                             RedirectAttributes redirectAttributes) {
-//        try {
-//
-//            listingRepository.deleteById(itemId);
-//            System.out.println("Item ID " + itemId + " removed by admin. Reason: " + reason);
-//
-//            // Flash message for dashboard
-//            redirectAttributes.addFlashAttribute("message", "Item removed successfully!");
-//        } catch (Exception e) {
-//            redirectAttributes.addFlashAttribute("error", "Failed to remove item. Please try again.");
-//            e.printStackTrace();
-//        }
-//
-//        return "redirect:/admin/dashboard";
-//    }
+    @GetMapping("/user/profile/{id}")
+    public String showProfile(@PathVariable("id") int userId, Model model,HttpSession session){
+        UserMasterEntity userMaster = userRepo.findById(userId).orElseThrow();
+        model.addAttribute("user" , userMaster);
+        session.setAttribute("userid" , userId);
+        return "listingitem/userprofile";
+    }
+
 
 
     //    User Dashboard .
@@ -197,6 +202,7 @@ public class UserController {
         int totalUploaded = listing.size();
         model.addAttribute("totalUploaded" , totalUploaded);
 
+      
         System.out.println("category Id is : " + categoryId);
 
         //code for images and listing_data , for finding all.
@@ -236,8 +242,12 @@ public class UserController {
 //         for showing reported items
         List<ReportEntity> reportEntity =  reportRepository.findByListing_User_Id(userId);
         System.out.println("Report : ===========================================");
-
         model.addAttribute("reports" , reportEntity);
+
+//        For showing purchased items.
+        List<PurchaseEntity> list = purchaseRepository.findBySeller_UserId(userId);
+        System.out.println("For purchase section.");
+        model.addAttribute("purchasedItems" , list);
 
         // default tab = upload
         model.addAttribute("activeSellTab", "upload");
@@ -248,18 +258,9 @@ public class UserController {
 
     @GetMapping("/user/findbycategory")
     public String getById(Model model,
-                          @RequestParam(name = "categoryId", required = false) Integer categoryId){
-        if(categoryId != null){
-            List<ListingEntity> list = listingRepository.findByCategoryId(categoryId);
-            model.addAttribute("listdata" , list);
-            System.out.println("Inside category one");
-        }
-        else{
-            List<ListingEntity> list = listingRepository.findAll();
-            model.addAttribute("listdata" , list);
-            System.out.println("For finding all");
-        }
-        return "redirect:/user/dashboard?categoryId=" + categoryId;
+                          @RequestParam(name = "categoryId") Integer categoryId){
+//
+            return "redirect:/user/dashboard?categoryId=" + categoryId+"#purchase";
     }
 
 
@@ -276,6 +277,17 @@ public class UserController {
                 .body(userMaster.getProfile_pic());
     }
 
+    @GetMapping("/userphoto2")
+    public ResponseEntity<byte []> getProfilePic( Model model ,HttpSession session){
+       Integer id =  (Integer) session.getAttribute("userid");
+        UserMasterEntity userMaster = userRepo.findById(id).orElseThrow();
+        if(userMaster == null){
+            return ResponseEntity.notFound().build();
+        }
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .body(userMaster.getProfile_pic());
+    }
 
     @GetMapping("/updateprofile")
     public String updateProfile( @RequestParam String name , @RequestParam String email,
@@ -304,6 +316,36 @@ public class UserController {
 
 
         return "redirect:/user/dashboard";
+    }
+
+
+    @GetMapping("/updateprofileadmin")
+    public String updateProfileAdmin( @RequestParam String name , @RequestParam String email,
+                                 @RequestParam String address , @RequestParam String contact,
+                                 HttpSession session , MultipartFile file){
+        Integer userId = (Integer) session.getAttribute("user_id");
+
+        try{
+            Optional<UserMasterEntity> optional = userRepo.findById(userId);
+            if(optional.isPresent()){
+                UserMasterEntity userMaster = optional.get();
+//                userMaster.setProfile_pic(file.getBytes());
+                userMaster.setName(name);
+                userMaster.setAddress(address);
+                userMaster.setEmail(email);
+                userMaster.setContact(contact);
+                System.out.println("===============before update");
+                userRepo.save(userMaster);
+                System.out.println("===========after update================.");
+            }else {
+                System.out.println("User not found!");
+            }
+        }catch (Exception e){
+            System.out.println("Exception here : " + e);
+        }
+
+
+        return "redirect:/admin/dashboard";
     }
 
 
