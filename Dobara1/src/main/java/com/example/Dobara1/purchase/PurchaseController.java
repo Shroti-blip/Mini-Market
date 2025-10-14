@@ -6,6 +6,7 @@ import com.example.Dobara1.usermaster.UserMasterEntity;
 import com.example.Dobara1.usermaster.UserRepo;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.Banner;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 @Controller
 public class PurchaseController {
@@ -62,5 +64,15 @@ public class PurchaseController {
         purchaseRepository.save(purchase);
         System.out.println("data is getting saved.");
         return "redirect:/user/dashboard";
+    }
+
+    //doubt ????
+    @GetMapping("/showpurchasedItems")
+    public String showPurchaseItems(Model model , HttpSession session){
+        Integer userId = (Integer) session.getAttribute("user_id");
+        List<PurchaseEntity> list = purchaseRepository.findBySeller_UserId(userId);
+        System.out.println("For purchase section.");
+        model.addAttribute("purchasedItems" , list);
+        return "";
     }
 }
