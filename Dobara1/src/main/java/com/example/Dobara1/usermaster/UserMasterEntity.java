@@ -1,8 +1,10 @@
 package com.example.Dobara1.usermaster;
 
 import jakarta.persistence.*;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.management.relation.Role;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name="user_master")
@@ -12,7 +14,23 @@ public class UserMasterEntity {
             @Column(name="user_id")
     int id;
 
-    String name , email , address , password , contact;
+    String name;
+    String email;
+    String address;
+    String password;
+    String contact;
+
+
+    String status;
+
+    @Column(name = "createddate")
+    @CreationTimestamp
+    private LocalDateTime createdDate;
+
+    @Column(name = "lastactivedate")
+    private  LocalDateTime lastActiveDate;
+
+
 
     @Enumerated(EnumType.STRING)
     private Role role;
@@ -27,6 +45,14 @@ public class UserMasterEntity {
     private UserMasterEntity user;
 
 
+
+    public UserMasterEntity() {
+    }
+
+    public UserMasterEntity(String status) {
+        this.status = status;
+    }
+
     public UserMasterEntity(int id, String name, String email, String address, String password, String contact, Role role, byte[] profile_pic) {
         this.id = id;
         this.name = name;
@@ -38,7 +64,25 @@ public class UserMasterEntity {
         this.profile_pic = profile_pic;
     }
 
-    public UserMasterEntity() {
+
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+    public LocalDateTime getLastActiveDate() {
+        return lastActiveDate;
+    }
+
+    public void setLastActiveDate(LocalDateTime lastActiveDate) {
+        this.lastActiveDate = lastActiveDate;
+    }
+
+    public UserMasterEntity(LocalDateTime lastActiveDate) {
+        this.lastActiveDate = lastActiveDate;
     }
 
     public int getId() {
