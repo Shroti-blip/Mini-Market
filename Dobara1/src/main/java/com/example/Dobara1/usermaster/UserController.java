@@ -27,6 +27,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.management.relation.Role;
 import java.beans.FeatureDescriptor;
+import java.time.LocalDateTime;
 import java.util.Base64;
 import java.util.List;
 import java.util.Optional;
@@ -62,7 +63,7 @@ public class UserController {
         return "usermaster/register";
     }
 
-    @GetMapping("/home")
+    @GetMapping("/homepage")
     public String getHomePage(){
         return "dashboard/homepage";
     }
@@ -123,6 +124,10 @@ public class UserController {
             return "usermaster/login";
         }
 
+        userMaster.setLastActiveDate(LocalDateTime.now());
+        userMaster.setStatus("Active");
+        userRepo.save(userMaster);
+
         session.setAttribute("user_id" , userMaster.getId());
         System.out.println("user id is : "+userMaster.getId());
 
@@ -154,9 +159,27 @@ public class UserController {
         model.addAttribute("listdata" , list);
 
 //        For showing all user
-        List<UserMasterEntity> userMasterEntityList = userRepo.findAll();
-        model.addAttribute("allusers" , userMasterEntityList);
+        List<UserMasterEntity> allusers = userRepo.findAll();
+        model.addAttribute("allusers" , allusers);
 
+//        For active user
+        List<UserMasterEntity> activeUsers =allusers.stream()
+                .filter(u->"Active".equalsIgnoreCase(u.getStatus())).toList();
+
+        List<UserMasterEntity> inactiveUsers = allusers.stream()
+                .filter(u->"InActive".equalsIgnoreCase(u.getStatus())).toList();
+
+        List<UserMasterEntity> archivedUsers =allusers.stream()
+                .filter(u->"Archived".equalsIgnoreCase(u.getStatus())).toList();
+
+
+        model.addAttribute("allUserList", allusers);
+        model.addAttribute("activeUsers", activeUsers);
+        model.addAttribute("inactiveUsers", inactiveUsers);
+        model.addAttribute("archivedUsers", archivedUsers);
+        model.addAttribute("allusers", allusers);
+        model.addAttribute("totalItems" , listingRepository.count());
+        model.addAttribute("recentUsers" , userRepo.findTop5ByRoleOrderByCreatedDateDesc(UserMasterEntity.Role.USER));
 
 //        For showing Feedback
         List<FeedbackEntity> feedbacks = feedbackRepository.findAll();
