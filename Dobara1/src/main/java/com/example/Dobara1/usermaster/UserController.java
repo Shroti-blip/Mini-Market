@@ -70,7 +70,7 @@ public class UserController {
 
 
     @PostMapping("/process")
-    @ResponseBody
+//    @ResponseBody
     public String saveData(@RequestParam String name,
                            @RequestParam String email,
                            @RequestParam String address,
