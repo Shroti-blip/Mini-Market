@@ -117,7 +117,49 @@
             box-shadow: 0 2px 6px rgba(0, 0, 0, 0.12);
         }
 
+                .feedback-container {
+            max-width: 90%;
+            margin: 50px auto;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+            padding: 40px;
+        }
 
+        .feedback-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .feedback-header h2 {
+            font-weight: 600;
+            color: #333;
+        }
+
+        label {
+            font-weight: 500;
+            color: #444;
+        }
+
+        .form-select, .form-control {
+            border-radius: 8px;
+        }
+
+        button {
+            border-radius: 8px;
+            font-size: 1.1rem;
+            font-weight: 500;
+        }
+
+        textarea {
+            resize: none;
+        }
+
+        @media (max-width: 768px) {
+            .feedback-container {
+                padding: 25px;
+            }
+        }
 
         .logout-popup {
             display: none;
@@ -327,7 +369,7 @@
                                     <div class="card-body">
                                         <i class="bi bi-bag-check display-5 text-success"></i>
                                         <h6 class="mt-2">Purchases</h6>
-                                        <p class="fs-4 fw-bold"><span th:text="${totalPurchase}"></span></p>
+                                        <p class="fs-4 fw-bold"><span th:text="${totalPurchase}"> 0</span></p>
                                     </div>
                                 </div>
                             </div>
@@ -379,7 +421,7 @@
                                         <i class="bi bi-bag text-success fs-1 mb-3"></i>
                                         <h5 class="fw-bold">View Purchases</h5>
                                         <p class="text-muted mb-3">Check your bought items.</p>
-                                        <a href="#purchase" class="btn btn-outline-success rounded-pill px-4">Go</a>
+                                        <a href="#purchase"  class="btn btn-outline-success rounded-pill px-4">Go</a>
                                     </div>
                                 </div>
 
@@ -853,55 +895,47 @@
 <!--                Code for feedback starts here  -->
 
                 <div id="feedback" class="dashboard-section" th:classappend="${activeTab}=='feedback' ? ' active'">
-                    <div class="container py-5 d-flex justify-content-center">
-
-                        <div class="card shadow-sm w-100 bg-light" style="max-width: 940px;">
-                        <div class="card-header ">
-                                <h4 class="mb-0 text-center">📝 Give Feedback</h4>
-                            </div>
-                            <div class="card-body">
-
-                                <form th:action="@{/submitFeedback}" method="post">
-
-                                    <!-- Rating -->
-                                    <div class="mb-3">
-                                        <label for="rating" class="form-label"><strong>Rating:</strong></label>
-                                        <select class="form-select" id="rating" name="rating" required>
-                                            <option value="" disabled selected>Select your rating</option>
-                                            <option value="Excellent">Excellent</option>
-                                            <option value="Good">Good</option>
-                                            <option value="Average">Average</option>
-                                            <option value="Poor">Poor</option>
-                                        </select>
-                                    </div>
-
-                                    <!-- Comments -->
-                                    <div class="mb-3">
-                                        <label for="comments" class="form-label"><strong>Comments:</strong></label>
-                                        <textarea class="form-control" id="comments" name="comments" rows="3" placeholder="Share your thoughts..." required></textarea>
-                                    </div>
-
-                                    <!-- Offensive content (optional) -->
-                                    <div class="mb-3">
-                                        <label for="offensive" class="form-label"><strong>Flag Offensive Content:</strong>
-                                            <small class="text-muted">(Optional)</small>
-                                        </label>
-                                        <input type="text" class="form-control" id="offensive" name="offensive" placeholder="Mention if something inappropriate">
-                                    </div>
-
-                                    <!-- Hidden user_id field -->
-                                    <input type="hidden" name="user_id" th:value="${session.user_id}" />
-
-                                    <!-- Submit button -->
-                                    <div class="d-grid">
-                                        <button type="submit" class="btn btn-success btn-lg">Submit Feedback</button>
-                                    </div>
-
-                                </form>
-
-                            </div>
+                    <div class="feedback-container">
+                        <div class="feedback-header">
+                            <h2>📝 Share Your Feedback</h2>
+                            <p class="text-muted">We’d love to hear your thoughts and suggestions!</p>
                         </div>
 
+                        <form method="post" action="/submitFeedback">
+                            <!-- Rating -->
+                            <div class="mb-3">
+                                <label for="rating" class="form-label">Rating</label>
+                                <select class="form-select" id="rating" name="rating" required>
+                                    <option value="" disabled selected>Select your rating</option>
+                                    <option value="Excellent">Excellent</option>
+                                    <option value="Good">Good</option>
+                                    <option value="Average">Average</option>
+                                    <option value="Poor">Poor</option>
+                                </select>
+                            </div>
+
+                            <!-- Comments -->
+                            <div class="mb-3">
+                                <label for="comments" class="form-label">Comments</label>
+                                <textarea class="form-control" id="comments" name="comments" rows="4"
+                                          placeholder="Share your thoughts..." required></textarea>
+                            </div>
+
+                            <!-- Offensive content -->
+                            <div class="mb-3">
+                                <label for="offensive" class="form-label">Flag Offensive Content <small class="text-muted">(Optional)</small></label>
+                                <input type="text" class="form-control" id="offensive" name="offensive"
+                                       placeholder="Mention if something inappropriate">
+                            </div>
+
+                            <!-- Hidden user id (example) -->
+                            <input type="hidden" name="user_id" value="123" />
+
+                            <!-- Submit -->
+                            <div class="d-grid">
+                                <button type="submit" class="btn btn-success btn-lg">Submit Feedback</button>
+                            </div>
+                        </form>
                     </div>
                 </div>
 
@@ -937,7 +971,11 @@
                                         <!-- Red badge -->
                                         <span class="badge bg-danger position-absolute top-0 end-0 mt-2 me-2">Reported</span>
 
-                                        <h5 class="card-title text-primary">
+                                        <button class="btn btn-sm btn-outline-danger position-absolute top-0 start-0 mt-2 ms-2 remove-report">
+                                            <i class="bi bi-x-lg"></i>
+                                        </button>
+
+                                        <h5 class="card-title text-primary ps-5">
                                             <i class="bi bi-box-seam me-1"></i>
                                             <span th:text="${report.listing.companyName}">Company Name</span>
                                         </h5>
@@ -980,6 +1018,36 @@
                                         <p class="small mb-2"><strong>User Email:</strong> <span th:text="${purchase.listingEntity.user.email}"></span></p>
                                         <p class="mb-2"><strong>User Contact:</strong> <span th:text="${purchase.listingEntity.user.contact}"></span></p>
                                         <p class="mb-0"><strong>Date:</strong> <span th:text="${#temporals.format(purchase.purchase_date, 'dd MMM yyyy')}"></span></p>
+
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- 🆕 NEW SECTION: Purchases made by logged-in user -->
+                        <h4 class="border-bottom pb-2 mb-4 text-primary mt-5">🛍️ Your Purchased Items</h4>
+
+                        <div class="row">
+                            <div class="col-12" th:if="${#lists.isEmpty(userPurchases)}">
+                                <p class="text-center text-muted">You haven’t purchased anything yet.</p>
+                            </div>
+
+                            <!-- Loop through current user's purchases -->
+                            <div class="col-sm-6 mb-4" th:each="item : ${userPurchases}">
+                                <div class="card shadow-sm h-100 border-primary">
+                                    <div class="card-body position-relative">
+
+                                        <!-- Blue badge -->
+                                        <span class="badge bg-primary position-absolute top-0 end-0 mt-2 me-2">Your Purchase</span>
+
+                                        <h5 class="card-title text-primary">
+                                            <i class="bi bi-cart-check me-1"></i>
+                                            <span th:text="${item.listingEntity.companyName}">Product Name</span>
+                                        </h5>
+
+                                        <p class="mb-2"><strong>Category:</strong> <span th:text="${item.listingEntity.category.name}"></span></p>
+                                        <p class="mb-2"><strong>Price:</strong> <span th:text="${item.listingEntity.price}"></span></p>
+<!--                                        <p class="mb-0"><strong>Date:</strong> <span th:text="${#temporals.format(item.purchase_date, 'dd MMM yyyy')}"></span></p>-->
 
                                     </div>
                                 </div>
@@ -1195,23 +1263,6 @@
 </script>
 
 
-<!--<script>-->
-<!--    function openLogoutPopup(event) {-->
-<!--        event.preventDefault();-->
-<!--        document.getElementById('logoutPopup').style.display = 'flex';-->
-<!--    }-->
-
-<!--    function closeLogoutPopup() {-->
-<!--        document.getElementById('logoutPopup').style.display = 'none';-->
-<!--    }-->
-
-<!--    function confirmLogout() {-->
-<!--        window.location.href = '/logout'; // triggers controller mapping-->
-<!--    }-->
-<!--</script>-->
-
-
-
 
 
 
@@ -1226,17 +1277,18 @@
     }
 </script>
 
-<!--Refresh thing for category -->
-<!--<script>-->
-<!--    window.addEventListener('load', function() {-->
-<!--      // If URL contains categoryId, remove it and reload once-->
-<!--      if (window.location.href.includes("categoryId")) {-->
-<!--        const baseUrl = window.location.origin + window.location.pathname;-->
-<!--        window.history.replaceState(null, "", baseUrl);-->
-<!--        window.location.href = baseUrl;  // reload clean page-->
-<!--      }-->
-<!--    });-->
-<!--</script>-->
+<!-- code for remove js-->
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll(".remove-report").forEach(button => {
+            button.addEventListener("click", function() {
+                const card = this.closest(".col-sm-6");
+                card.remove();
+            });
+        });
+    });
+</script>
+
 
 
 
