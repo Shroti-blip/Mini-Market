@@ -7,5 +7,6 @@ import java.util.List;
 
 public interface PurchaseRepository extends JpaRepository<PurchaseEntity  , Integer> {
     List<PurchaseEntity> findBySeller_UserId(Integer sellerId);
+    List<PurchaseEntity> findByBuyerId(Integer userId);
 
 }
