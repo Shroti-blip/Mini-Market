@@ -271,6 +271,11 @@ public class UserController {
         List<PurchaseEntity> list = purchaseRepository.findBySeller_UserId(userId);
         System.out.println("For purchase section.");
         model.addAttribute("purchasedItems" , list);
+//       for showing logged-in user purchase item.
+        List<PurchaseEntity> entityList = purchaseRepository.findByBuyerId(userId);
+        int totalPurchase = entityList.size();
+        model.addAttribute("totalPurchase",totalPurchase);
+        model.addAttribute("userPurchases",entityList);
 
         // default tab = upload
         model.addAttribute("activeSellTab", "upload");
