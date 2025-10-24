@@ -431,7 +431,7 @@
                                         <i class="bi bi-heart text-danger fs-1 mb-3"></i>
                                         <h5 class="fw-bold">Liked Items</h5>
                                         <p class="text-muted mb-3">See what you’ve liked.</p>
-                                        <a href="#liked" class="btn btn-outline-danger rounded-pill px-4">Go</a>
+                                        <a href="#liked-item" class="btn btn-outline-danger rounded-pill px-4" id="">Go</a>
                                     </div>
                                 </div>
 
@@ -466,23 +466,21 @@
                             </div>
 
                             <!-- Search by Price -->
-                            <div class="col-md-5">
-                                <form th:action="@{/listing/search/price}" method="get"  class="d-flex">
-                                    <input type="number" class="form-control me-2" name="price" placeholder="Search by Item price">
-                                    <button type="submit" class="btn btn-success">Search</button>
-                                </form>
-                            </div>
-
-<!--                            <div th:each="item : ${byPrice}">-->
-<!--                                <p th:text="${item.description}"></p>-->
+<!--                            <div class="col-md-5">-->
+<!--                                <form th:action="@{/listing/search/price}" method="get"  class="d-flex">-->
+<!--                                    <input type="number" class="form-control me-2" name="price" placeholder="Search by Item price">-->
+<!--                                    <button type="submit" class="btn btn-success">Search</button>-->
+<!--                                </form>-->
 <!--                            </div>-->
+
+
                         </div>
                     </div>
 
 <!--        search bar end       -->
                     <div class="container mt-5">
                         <div class="row ">
-                            <!-- Item Card 1 -->
+                            <!-- Item Card  -->
                             <div class="col-md-4 mb-4" th:each="listing , iter: ${listdata}">
                                 <div class="card shadow-sm position-relative">
 
@@ -521,8 +519,17 @@
                                     <div class="card-body">
                                         <h5 class="card-title"><span
                                                 th:text="${listing.companyName}"></span></h5>
-                                        <p class="card-text"><strong>Price:</strong> ₹<span
-                                                th:text="${listing.price}"></span></p>
+                                        <!-- Price and Review in same row -->
+                                        <div class="d-flex justify-content-between align-items-center mb-2">
+                                            <p class="mb-0"><strong>Price:</strong> ₹<span th:text="${listing.price}"></span></p>
+
+                                            <!-- Review button -->
+                                            <button class="btn btn-outline-primary btn-sm"
+                                                    th:attr="data-itemid=${listing.id}"
+                                                    onclick="openReviewModal(this)">
+                                                <i class="bi bi-star-fill me-1"></i> Review
+                                            </button>
+                                        </div>
                                         <p class="card-text"><strong>Color:</strong> <span
                                                 th:text="${listing.color}"></span></p>
                                         <p class="card-text"><strong>Condition:</strong> <span
@@ -565,12 +572,6 @@
                                     Item</button>
                             </li>
                             <li class="nav-item" role="presentation">
-                                <button class="nav-link"
-                                        th:classappend="${activeSellTab} == 'uploadImage' ? 'active' : ''"
-                                        data-bs-toggle="tab" data-bs-target="#upload_images" type="button">Upload
-                                    photos</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
                                 <button class="nav-link" th:classappend="${activeSellTab} == 'show' ? 'active' : ''"
                                         data-bs-toggle="tab" data-bs-target="#show_all_items" type="button">Show All
                                     Items</button>
@@ -578,6 +579,12 @@
                             <li class="nav-item" role="presentation">
                                 <button class="nav-link" th:classappend="${activeSellTab} == 'edit' ? 'active' : ''"
                                         data-bs-toggle="tab" data-bs-target="#edit_items" type="button">Edit
+                                    Items</button>
+                            </li>
+                            <li class="nav-item" role="presentation">
+                                <button class="nav-link"
+                                        th:classappend="${activeSellTab} == 'uploadImage' ? 'active' : ''"
+                                        data-bs-toggle="tab" data-bs-target="#purchased_by_user" type="button">Purchased
                                     Items</button>
                             </li>
                         </ul>
@@ -673,29 +680,43 @@
                                 </div>
                             </div>
 
-                            <!-- Upload Images -->
+                            <!-- Purchased items-->
                             <div class="tab-pane fade"
-                                 th:classappend="${activeSellTab} == 'uploadImage' ? 'show active' : ''"
-                                 id="upload_images" role="tabpanel">
-                                <div class="container">
-                                    <div class="upload-card bg-white">
-                                        <h3 class="text-center mb-4">Upload Product Images</h3>
-                                        <form method="post" th:action="@{/images/upload}"
-                                              enctype="multipart/form-data">
-                                            <input type="hidden" name="listingId" th:value="${listingId}">
-                                            <div class="mb-3">
-                                                <label class="form-label">Select Images</label>
-                                                <input class="form-control" type="file" name="images"
-                                                       id="productImages" multiple accept="image/*">
-                                                <div class="form-text">You can select multiple images.</div>
+                                 th:classappend="${activeSellTab} == 'purchased_by_user' ? 'show active' : ''"
+                                 id="purchased_by_user" role="tabpanel">
+<!---->
+                                 <!-- Purchased Items Section -->
+                                <h4 class="border-bottom pb-2 mb-4 text-success mt-5">💰 Purchased Items By Customers</h4>
+
+                                <div class="row">
+                                    <div class="col-12" th:if="${#lists.isEmpty(purchasedItems)}">
+                                        <p class="text-center text-muted">No purchases yet.</p>
+                                    </div>
+
+                                    <!-- Loop through purchased items -->
+                                    <div class="col-sm-6 mb-4" th:each="purchase : ${purchasedItems}">
+                                        <div class="card shadow-sm h-100 bg-light">
+                                            <div class="card-body position-relative">
+
+                                                <!-- Green badge -->
+                                                <span class="badge bg-success position-absolute top-0 end-0 mt-2 me-2">Purchased</span>
+
+                                                <h5 class="card-title text-success">
+                                                    <i class="bi bi-bag-check me-1"></i>
+                                                    <span th:text="${purchase.listingEntity.companyName}">Product Name</span>
+                                                </h5>
+
+                                                <p class="mb-2"><strong>User Name:</strong> <span th:text="${purchase.listingEntity.user.name}"></span></p>
+                                                <p class="small mb-2"><strong>User Email:</strong> <span th:text="${purchase.listingEntity.user.email}"></span></p>
+                                                <p class="mb-2"><strong>User Contact:</strong> <span th:text="${purchase.listingEntity.user.contact}"></span></p>
+                                                <p class="mb-0"><strong>Date:</strong> <span th:text="${#temporals.format(purchase.purchase_date, 'dd MMM yyyy')}"></span></p>
+
                                             </div>
-                                            <div class="preview d-flex flex-wrap"></div>
-                                            <div class="d-grid">
-                                                <button type="submit" class="btn btn-primary">Upload</button>
-                                            </div>
-                                        </form>
+                                        </div>
                                     </div>
                                 </div>
+<!--                   -->
+
                             </div>
 
                             <!-- Show All Items -->
@@ -897,7 +918,7 @@
                 <div id="feedback" class="dashboard-section" th:classappend="${activeTab}=='feedback' ? ' active'">
                     <div class="feedback-container">
                         <div class="feedback-header">
-                            <h2>📝 Share Your Feedback</h2>
+                            <h3>📝 Share Your Feedback As a User</h3>
                             <p class="text-muted">We’d love to hear your thoughts and suggestions!</p>
                         </div>
 
@@ -953,76 +974,98 @@
 
                     <div class="container py-5">
 
-                        <h2 class="text-center mb-5">🧾 User Activity Summary</h2>
+                        <div class="container py-5">
 
-                        <!-- Reported Items Section -->
-                        <h4 class="border-bottom pb-2 mb-4 text-danger">🚫 Reported Items</h4>
+                            <h2 class="text-center mb-5">🧾 User Activity Summary</h2>
 
-                        <div class="row">
-                            <div class="col-12" th:if="${#lists.isEmpty(reports)}">
-                                <p class="text-center text-muted">No reported items found.</p>
-                            </div>
+                            <!-- Nav tabs -->
+                            <ul class="nav nav-tabs mb-4" id="reportTabs" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active" id="user-reports-tab" data-bs-toggle="tab" data-bs-target="#user-reports"
+                                            type="button" role="tab" aria-controls="user-reports" aria-selected="true">
+                                        🚫 Reported Items
+                                    </button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link" id="purchase-reports-tab" data-bs-toggle="tab" data-bs-target="#purchase-reports"
+                                            type="button" role="tab" aria-controls="purchase-reports" aria-selected="false">
+                                        🛍️ Purchaser Reports
+                                    </button>
+                                </li>
+                            </ul>
 
-                            <!-- Loop through reports -->
-                            <div class="col-sm-6 mb-4" th:each="report : ${reports}">
-                                <div class="card shadow-sm h-100">
-                                    <div class="card-body position-relative">
+                            <!-- Tab panes -->
+                            <div class="tab-content" id="reportTabsContent">
+                                <!-- User Reported Items -->
+                                <div class="tab-pane fade show active" id="user-reports" role="tabpanel" aria-labelledby="user-reports-tab">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover text-center align-middle">
+                                            <thead class="table-danger">
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Product Name</th>
+                                                <th>Category</th>
+                                                <th>Reason</th>
+                                                <th>Reported Date</th>
+                                                <th>Action</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:if="${#lists.isEmpty(reports)}">
+                                                <td colspan="6" class="text-muted">No reported items found.</td>
+                                            </tr>
+                                            <tr th:each="report, iterStat : ${reports}">
+                                                <td th:text="${iterStat.index + 1}">1</td>
+                                                <td th:text="${report.listing.companyName}">Company Name</td>
+                                                <td th:text="${report.listing.category.name}">Category</td>
+                                                <td th:text="${report.reason}">Reason</td>
+                                                <td th:text="${#temporals.format(report.reportDate, 'dd MMM yyyy')}">12 Oct 2025</td>
+                                                <td>
+                                                    <button class="btn btn-sm btn-outline-danger remove-report">
+                                                        <i class="bi bi-x-lg"></i> Remove
+                                                    </button>
+                                                </td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
 
-                                        <!-- Red badge -->
-                                        <span class="badge bg-danger position-absolute top-0 end-0 mt-2 me-2">Reported</span>
-
-                                        <button class="btn btn-sm btn-outline-danger position-absolute top-0 start-0 mt-2 ms-2 remove-report">
-                                            <i class="bi bi-x-lg"></i>
-                                        </button>
-
-                                        <h5 class="card-title text-primary ps-5">
-                                            <i class="bi bi-box-seam me-1"></i>
-                                            <span th:text="${report.listing.companyName}">Company Name</span>
-                                        </h5>
-
-                                        <p class="text-muted small mb-2">
-                                            <i class="bi bi-tag me-1"></i>
-                                            <span th:text="${report.listing.category.name}">Category</span>
-                                        </p>
-
-                                        <p class="mb-1"><strong>Reason:</strong> <span th:text="${report.reason}">Inappropriate content</span></p>
-                                        <p class="mb-0"><strong>Date:</strong> <span th:text="${#temporals.format(report.reportDate, 'dd MMM yyyy')}">12 Oct 2025</span></p>
-
+                                <!-- Purchaser Reports -->
+                                <div class="tab-pane fade" id="purchase-reports" role="tabpanel" aria-labelledby="purchase-reports-tab">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover text-center align-middle">
+                                            <thead class="table-primary">
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Product Name</th>
+                                                <th>Category</th>
+                                                <th>Price</th>
+                                                <th>Report Reason</th>
+                                                <th>Purchase Date</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody>
+                                            <tr th:if="${#lists.isEmpty(purchaseReports)}">
+                                                <td colspan="6" class="text-muted">No purchase reports found.</td>
+                                            </tr>
+                                            <tr th:each="item, iterStat : ${purchaseReports}">
+                                                <td th:text="${iterStat.index + 1}">1</td>
+                                                <td th:text="${item.listingEntity.companyName}">Product Name</td>
+                                                <td th:text="${item.listingEntity.category.name}">Category</td>
+                                                <td th:text="${item.listingEntity.price}">Price</td>
+                                                <td th:text="${item.reason}">Report Reason</td>
+                                                <td th:text="${#temporals.format(item.purchaseDate, 'dd MMM yyyy')}">12 Oct 2025</td>
+                                            </tr>
+                                            </tbody>
+                                        </table>
                                     </div>
                                 </div>
                             </div>
+
                         </div>
 
-                        <!-- Purchased Items Section -->
-                        <h4 class="border-bottom pb-2 mb-4 text-success mt-5">💰 Purchased Items By Customers</h4>
 
-                        <div class="row">
-                            <div class="col-12" th:if="${#lists.isEmpty(purchasedItems)}">
-                                <p class="text-center text-muted">No purchases yet.</p>
-                            </div>
-
-                            <!-- Loop through purchased items -->
-                            <div class="col-sm-6 mb-4" th:each="purchase : ${purchasedItems}">
-                                <div class="card shadow-sm h-100 bg-light">
-                                    <div class="card-body position-relative">
-
-                                        <!-- Green badge -->
-                                        <span class="badge bg-success position-absolute top-0 end-0 mt-2 me-2">Purchased</span>
-
-                                        <h5 class="card-title text-success">
-                                            <i class="bi bi-bag-check me-1"></i>
-                                            <span th:text="${purchase.listingEntity.companyName}">Product Name</span>
-                                        </h5>
-
-                                        <p class="mb-2"><strong>User Name:</strong> <span th:text="${purchase.listingEntity.user.name}"></span></p>
-                                        <p class="small mb-2"><strong>User Email:</strong> <span th:text="${purchase.listingEntity.user.email}"></span></p>
-                                        <p class="mb-2"><strong>User Contact:</strong> <span th:text="${purchase.listingEntity.user.contact}"></span></p>
-                                        <p class="mb-0"><strong>Date:</strong> <span th:text="${#temporals.format(purchase.purchase_date, 'dd MMM yyyy')}"></span></p>
-
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
 
                         <!-- 🆕 NEW SECTION: Purchases made by logged-in user -->
                         <h4 class="border-bottom pb-2 mb-4 text-primary mt-5">🛍️ Your Purchased Items</h4>
