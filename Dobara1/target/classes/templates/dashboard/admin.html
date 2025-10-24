@@ -9,77 +9,91 @@
     <!-- Bootstrap CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
 
-    <!-- Bootstrap Icons -->
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 
     <style>
-        body {
-            font-family: 'Lato', sans-serif;
-            font-size: 0.9rem;
-        }
+        :root {
+           --primary-color: #00A859;
+           --secondary-color: #007A43;
+           --accent-color: #FF6B35;
+           --dark-color: #2C3E50;
+           --light-bg: #F8F9FA;
+       }
+       body {
+           font-family: 'Lato', sans-serif;
+           font-size: 0.9rem;
+       }
 
-        .sidebar {
-            position: fixed;
-            top: 0;
-            bottom: 0;
-            left: 0;
-            z-index: 100;
-            padding: 70px 0 0;
-            box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.1);
-            min-height: 100vh;
-        }
+       .sidebar {
+           position: fixed;
+           top: 0;
+           bottom: 0;
+           left: 0;
+           z-index: 100;
+           padding: 70px 0 0;
+           box-shadow: inset -1px 0 0 rgba(0, 0, 0, 0.1);
+           min-height: 100vh;
+       }
 
-        .sidebar .nav-link {
-            font-weight: 500;
-            color: #333;
-            font-weight: bold;
-            padding: 0.75rem 1rem;
-            margin: 0.125rem 0;
-            border-radius: 0.375rem;
-            transition: all 0.3s ease;
-        }
+       .sidebar .nav-link {
+           font-weight: 500;
+           color: #333;
+           font-weight: bold;
+           padding: 0.75rem 1rem;
+           margin: 0.125rem 0;
+           border-radius: 0.375rem;
+           transition: all 0.3s ease;
+       }
 
-        .sidebar .nav-link:hover,
+     .sidebar .nav-link:hover,
         .sidebar .nav-link.active {
             color: var(--primary-color);
-            background-color: rgba(13, 110, 253, 0.1);
+            background-color: rgba(13, 110, 253, 0.06);
         }
 
-        .sidebar .nav-link i {
-            margin-right: 0.5rem;
+       .sidebar .nav-link i {
+           margin-right: 0.5rem;
+       }
+
+          .navbar-brand {
+            font-size: 1.3rem;
+            font-weight: bold;
+            color: var(--primary-color) !important;
         }
 
-        .dashboard-section {
-            display: none;
-        }
+       .dashboard-section {
+           display: none;
+       }
 
-        .dashboard-section.active {
-            display: block;
-        }
+       .dashboard-section.active {
+           display: block;
+       }
 
 <!--        vaishnavi code  -->
 
-    .product-card {
-      border-radius: 15px;
-      overflow: hidden;
-      box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-      transition: transform 0.2s ease, box-shadow 0.2s ease;
-      height: 100%;
-    }
-    .product-card:hover {
-      transform: translateY(-5px);
-      box-shadow: 0 6px 18px rgba(0,0,0,0.15);
-    }
-    .carousel-inner img {
-      height: 200px;
-      object-fit: cover;
-    }
-    .price-tag {
-      font-size: 1.25rem;
-      font-weight: bold;
-      color: green;
-    }
+   .product-card {
+     border-radius: 15px;
+     overflow: hidden;
+     box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+     transition: transform 0.2s ease, box-shadow 0.2s ease;
+     height: 100%;
+   }
+   .product-card:hover {
+     transform: translateY(-5px);
+     box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+   }
+   .carousel-inner img {
+     height: 200px;
+     object-fit: cover;
+   }
+   .price-tag {
+     font-size: 1.25rem;
+     font-weight: bold;
+     color: green;
+   }
 
 <!--        ends here -->
 
@@ -95,8 +109,8 @@
         <a class="navbar-brand d-flex align-items-center" href="#">
 <!--            <img src="../images/wallpaper.jpg" alt="Logo"-->
 <!--                 style="width:50px; height:50px; border-radius:50%; object-fit:cover; ">-->
-            <span style="color:black;">
-                 <i class="fas fa-store-alt"></i> Mini Market
+            <span style="color:#00A859;">
+                 <i class="fas fa-store-alt "></i> Mini Market
 <!--                    <i class="bi bi-person me-1"></i>-->
 <!--                    <span th:text="${user_master.name}"></span>-->
                 </span>
@@ -113,13 +127,10 @@
                     <span class="d-none d-sm-inline text-dark" th:text="${user_master.name}"></span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-end">
-                    <li><a class="dropdown-item" href="#"><i class="fas fa-user me-2"></i>Company Profile</a></li>
-                    <li>
-                        <hr class="dropdown-divider">
-                    </li>
+
                     <li><a class="dropdown-item" th:href="@{/logout}" onclick="confirmLogout(event)">
-                        <i class="fas fa-sign-in-alt me-2"></i>Sign
-                        out</a></li>
+                        <i class="fas fa-sign-in-alt me-2"></i>Sign out
+                        </a></li>
                 </ul>
             </div>
         </div>
@@ -143,12 +154,12 @@
                     </li>
                     <li class="nav-item"><a class="nav-link" href="#show-all-user">
                         <i class="bi bi-people me-2"></i>show all user</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#Profile"><i
+                    <li class="nav-item"><a class="nav-link" href="#profile"><i
                             class="bi bi-mortarboard me-2"></i>Profile</a></li>
                     <li class="nav-item"><a class="nav-link" href="#feedback"><i
                             class="bi bi-book me-2"></i>Feedback Review</a></li>
-                    <li class="nav-item"><a class="nav-link" href="#profile"><i
-                            class="bi bi-folder2-open me-2"></i>Profile</a></li>
+                    <li class="nav-item"><a class="nav-link" href="#logout" onclick="confirmLogout(event)"><i
+                            class="bi bi-folder2-open me-2"></i>logout</a></li>
                     <!-- <li class="nav-item"><a class="nav-link" href="#message-part"><i
                                 class="bi bi-chat-dots me-2"></i>Offers</a></li> -->
                 </ul>
@@ -159,11 +170,67 @@
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
 
             <div class="row my-4">
-                <div id="home" class="dashboard-section">
-                    <h2 class="mt-3">Admin Dashboard</h2>
+<!--                <div id="home" class="dashboard-section">-->
+<!--&lt;!&ndash;                    <h2 class="mt-3">Admin Dashboard</h2>&ndash;&gt;-->
+
+<!--                    Home page code starts here -->
+
+                    <!-- ================= HOME SECTION ================= -->
+                    <div id="home" class="dashboard-section active">
+                        <h3 class="fw-bold mb-4 text-center">Home</h3>
+
+                        <!-- ====== Top Summary Cards ====== -->
+                        <div class="row g-4 mb-4">
+                            <div class="col-md-4">
+                                <div class="card text-center p-4 shadow-sm">
+                                    <i class="bi bi-people card-icon text-primary fs-1 mb-2"></i>
+                                    <h5>Total Users</h5>
+                                    <h2 th:text="${allusers.size()}">0</h2>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="card text-center p-4 shadow-sm">
+                                    <i class="bi bi-box-seam card-icon text-success fs-1 mb-2"></i>
+                                    <h5>Total Items</h5>
+                                    <h2 th:text="${totalItems}">0</h2>
+                                </div>
+                            </div>
+
+                            <div class="col-md-4">
+                                <div class="card text-center p-4 shadow-sm">
+                                    <i class="bi bi-person-check card-icon text-success fs-1 mb-2"></i>
+                                    <h5>Active Users</h5>
+                                    <h2 th:text="${activeUsers.size()}">0</h2>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="card text-center p-4 shadow-sm">
+                                    <i class="bi bi-person-check card-icon text-warning fs-1 mb-2"></i>
+                                    <h5>Inactive Users</h5>
+                                    <h2 th:text="${inactiveUsers.size()}">0</h2>
+                                </div>
+                            </div>
+
+                            <div class="col-md-6">
+                                <div class="card text-center p-4 shadow-sm">
+                                    <i class="bi bi-person-slash card-icon text-danger fs-1 mb-2"></i>
+                                    <h5>Archived Users</h5>
+                                    <h2 th:text="${archivedUsers.size()}">0</h2>
+                                </div>
+                            </div>
+                        </div>
+
+<!--                        Button code removed. -->
+                    </div>
+
+
+
+                    <!--                    Home page code ends here -->
                 </div>
 
-                <!-- New User Registration Part -->
+                <!-- Reporting Part of Items.-->
                 <div id="show-all-items" class="dashboard-section">
                     <h3>show all items</h3>
 
@@ -179,7 +246,7 @@
                                             <div class="carousel-item"
                                             th:each="img, imgStat : ${listing.images}"
                                             th:class="'carousel-item' + (${imgStat.index} == 0 ? ' active' : '')">
-                                                <img th:src="@{'/images/' +${img.id}"
+                                                <img th:src="@{'/images/' + ${img.id}}"
                                                 class="d-block w-100 carousel-img" alt="Item 1 images">
                                             </div>
                                         </div>
@@ -205,71 +272,329 @@
                                                 th:text="${listing.color}"></span></p>
                                         <p class="card-text"><strong>Condition:</strong> <span
                                                 th:text="${listing.condition}"></span></p>
-                                        <p class="card-text text-muted small"><span
+                                        <p class="card-text "><strong>Description: </strong><span
                                                 th:text="${listing.description}"></span></p>
-                                        <button type="button"
-                                        class="btn btn-success w-100 mt-2"
-                                        data-bs-toggle="modal"
-                                        data-bs-target="#deleteitem">
-                                            <i class="bi bi-cart-plus me-1"></i>Remove Item
-                                        </button>
+                                        <div class="d-flex gap-2 mt-2">
+
+
+                                            <!-- Delete Button -->
+                                            <button type="button" class="btn btn-danger flex-fill"
+                                                    data-bs-toggle="modal"
+                                                    th:attr="data-bs-target='#removeModal' + ${listing.id}">
+                                                <i class="bi bi-trash3-fill me-1"></i>Report Item
+                                            </button>
+                                        </div>
+
                                     </div>
+                                </div>
+<!--                                3 div shift-->
+
+
+<!--                    Modal code-->
+
+                    <!-- Remove Item Modal -->
+<!--                    th:id="'removeModal' + ${iter.index}" -->
+                    <div class="modal fade" th:id="'removeModal' + ${listing.id}" tabindex="-1" aria-labelledby="removeModalLabel" aria-hidden="true">
+                        <div class="modal-dialog">
+                            <div class="modal-content">
+                                <div class="modal-header bg-danger text-white">
+                                    <h5 class="modal-title" id="removeModalLabel">Confirm Item Removal</h5>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <form th:action="@{/admin/reportitem}" method="post">
+                                    <div class="modal-body">
+                                        <p>Are you sure you want to remove
+                                            <strong th:text="${listing.description}"></strong>?
+                                        </p>
+                                        <input type="hidden" name="itemId" th:value="${listing.id}">
+                                        <div class="mb-3">
+                                            <label for="reason" class="form-label">Reason for Removal</label>
+                                            <textarea class="form-control" id="reason" name="reason" rows="3" placeholder="Write your reason here..." required></textarea>
+                                        </div>
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                                        <button type="submit" class="btn btn-danger">Report Item</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+
+                            </div>
+                        </div>
+                    </div>
+<!--Modal code ends here.-->
+
+                </div>
+<!--                Reporting part end here.-->
+
+<!--                show all user like buyer / seller part is here-->
+                <div id="show-all-user" class="dashboard-section">
+<!--                    <h1>This is a Div</h1>-->
+                    <div class="container mt-5">
+<!--                        <h3 class="mb-4">All Users</h3>-->
+                        <!-- ====== Filter Buttons ====== -->
+                        <div class="text-start mb-4">
+                            <button class="btn btn-outline-success fw-semibold shadow-sm me-2 mb-2 " id="activeBtn">
+                                <i class="bi bi-person-check-fill me-1"></i> Active Users
+                            </button>
+                            <button class="btn btn-outline-warning fw-semibold shadow-sm me-2 mb-2" id="inactiveBtn">
+                                <i class="bi bi-person-dash-fill me-1"></i> Inactive Users
+                            </button>
+                            <button class="btn btn-outline-danger fw-semibold shadow-sm mb-2" id="archivedBtn">
+                                <i class="bi bi-archive-fill me-1"></i> Archived Users
+                            </button>
+                        </div>
+
+                        <!-- ====== Active Users Table ====== -->
+                        <div id="activeTable" class="user-table d-none">
+                            <h4 class="text-success fw-bold text-center mb-3">Active Users</h4>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover align-middle text-center">
+                                    <thead class="table-success">
+                                    <tr>
+                                        <th>SNo.</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="user ,iterStat: ${activeUsers}">
+                                        <td th:text="${iterStat.index+1}"></td>
+                                        <td th:text="${user.name}">John Doe</td>
+                                        <td th:text="${user.email}">john@example.com</td>
+                                        <td>
+                                            <a th:href="@{'/user/profile/' + ${user.id}}"
+                                               class="btn btn-success btn-sm">
+                                                View Profile
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <!-- Optional: show if no users -->
+                                    <tr th:if="${#lists.isEmpty(users)}">
+                                        <td colspan="4" class="text-center text-muted">
+                                            No users found.
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- ====== Inactive Users Table ====== -->
+                        <div id="inactiveTable" class="user-table d-none">
+                            <h4 class="text-warning fw-bold text-center mb-3">Inactive Users</h4>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover align-middle text-center">
+                                    <thead class="table-warning">
+                                    <tr>
+                                        <th>SNo.</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="user , iterStat: ${inactiveUsers}">
+                                        <td th:text="${iterStat.index+1}"></td>
+                                        <td th:text="${user.name}">John Doe</td>
+                                        <td th:text="${user.email}">john@example.com</td>
+                                        <td>
+                                            <a th:href="@{'/user/profile/' + ${user.id}}"
+                                               class="btn btn-success btn-sm">
+                                                View Profile
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <!-- Optional: show if no users -->
+                                    <tr th:if="${#lists.isEmpty(users)}">
+                                        <td colspan="4" class="text-center text-muted">
+                                            No users found.
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- ====== Archived Users Table ====== -->
+                        <div id="archivedTable" class="user-table d-none">
+                            <h4 class="text-danger fw-bold text-center mb-3">Archived Users</h4>
+                            <div class="table-responsive">
+                                <table class="table table-striped table-hover align-middle text-center">
+                                    <thead class="table-danger">
+                                    <tr>
+                                        <th>SNo.</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Action</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <tr th:each="user , iterStat: ${archivedUsers}">
+                                        <td th:text="${iterStat.index + 1}"></td>
+                                        <td th:text="${user.name}">John Doe</td>
+                                        <td th:text="${user.email}">john@example.com</td>
+                                        <td>
+                                            <a th:href="@{'/user/profile/' + ${user.id}}"
+                                               class="btn btn-success btn-sm">
+                                                View Profile
+                                            </a>
+                                        </td>
+                                    </tr>
+                                    <!-- Optional: show if no users -->
+                                    <tr th:if="${#lists.isEmpty(users)}">
+                                        <td colspan="4" class="text-center text-muted">
+                                            No users found.
+                                        </td>
+                                    </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+<!--                        -->
+                    </div>
+<!--                    script start -->
+                    <script>
+                        const activeBtn = document.getElementById('activeBtn');
+                        const inactiveBtn = document.getElementById('inactiveBtn');
+                        const archivedBtn = document.getElementById('archivedBtn');
+
+                        const activeTable = document.getElementById('activeTable');
+                        const inactiveTable = document.getElementById('inactiveTable');
+                        const archivedTable = document.getElementById('archivedTable');
+
+                        function showTable(table) {
+                          [activeTable, inactiveTable, archivedTable].forEach(t => t.classList.add('d-none'));
+                          table.classList.remove('d-none');
+                        }
+
+                        activeBtn.addEventListener('click', () => showTable(activeTable));
+                        inactiveBtn.addEventListener('click', () => showTable(inactiveTable));
+                        archivedBtn.addEventListener('click', () => showTable(archivedTable));
+                    </script>
+<!--                    script ends-->
+
+                </div>
+<!--               show all user like buyer / seller part ends here -->
+
+
+<!--                Feedback Review code starts here.-->
+
+                <div class="container py-5 dashboard-section" id="feedback">
+                    <h2 class="text-center mb-4">📋 User Feedback</h2>
+
+                    <!-- No feedback case -->
+                    <div class="row g-4" th:if="${#lists.isEmpty(feedbacks)}">
+                        <div class="col-12 text-center text-muted">
+                            <p>No feedback submitted yet.</p>
+                        </div>
+                    </div>
+
+                    <!-- Feedback list (2 cards per row) -->
+                    <div class="row g-4" th:if="${!#lists.isEmpty(feedbacks)}">
+                        <div class="col-md-6" th:each="feedback : ${feedbacks}">
+                            <div class="card shadow-sm h-100">
+                                <div class="card-body">
+
+                                    <!-- Highlight offensive feedback -->
+                                    <span class="badge"
+                                          th:classappend="${feedback.offensive != null and feedback.offensive != ''} ? 'bg-danger' : 'bg-secondary'">
+                        <span th:text="${feedback.offensive != null and feedback.offensive != '' ? 'Offensive' : 'General'}"></span>
+                    </span>
+
+                                    <h5 class="card-title mt-2">
+                                        <i class="bi bi-person-circle me-1"></i>
+                                        <span th:text="${feedback.user.name}">User Name</span>
+                                    </h5>
+
+                                    <p class="mb-1"><strong>Email:</strong>
+                                        <span th:text="${feedback.user.email}">user@example.com</span>
+                                    </p>
+                                    <p class="mb-1"><strong>Rating:</strong>
+                                        <span th:text="${feedback.rating}">Good</span>
+                                    </p>
+                                    <p class="mb-2"><strong>Comments:</strong>
+                                        <span th:text="${feedback.comments}">Great experience!</span>
+                                    </p>
+
+                                    <p class="mb-0 text-muted small">
+                                        <strong>Date:</strong>
+                                        <span th:text="${#temporals.format(feedback.date, 'dd MMM yyyy')}">12 Oct 2025</span>
+                                    </p>
+
                                 </div>
                             </div>
                         </div>
                     </div>
-
-
                 </div>
 
-                <div id="show-all-user" class="dashboard-section">
-                    <h1>This is a Div</h1>
-                    <div class="card p-3">
+                <!--                Feedback review code ends here .-->
 
-                        <!-- Tabs -->
-                        <ul class="nav nav-tabs" id="myTab2" role="tablist">
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link active" id="newuser-tab" data-bs-toggle="tab"
-                                        data-bs-target="#addnewitem" type="button">Add New User</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="userupdate-tab" data-bs-toggle="tab"
-                                        data-bs-target="#upload_images" type="button">Upload Images</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link" id="usernotifications-tab" data-bs-toggle="tab"
-                                        data-bs-target="#user_notifications" type="button">Notifications</button>
-                            </li>
-                            <li class="nav-item" role="presentation">
-                                <button class="nav-link " id="user-tab" data-bs-toggle="tab"
-                                        data-bs-target="#allusers" type="button">All Users</button>
-                            </li>
-                        </ul>
+<!--                Profile edit code -->
 
-                        <!-- Tab Content -->
-                        <div class="tab-content p-3">
-                            <!--                            <div class="tab-pane fade" id="allusers" role="tabpanel">-->
-                            <!--                                <h5>User Profile</h5>-->
-                            <!--                                <p>All User will be show here.</p>-->
-                            <!--                            </div>-->
-                            <div class="tab-pane fade show active" id="addnewitem" role="tabpanel">
-                                <h4>Add New Item</h4>
-                            </div>
+                <div id="profile" class="dashboard-section" th:classappend="${activeTab}=='profile' ? 'active'">
+<!--                    <h2>Profile section.</h2>-->
 
-                            <!--              Upload Image form code -->
-                            <div class="tab-pane fade" id="upload_images" role="tabpanel">
-                                <h5>Image upload</h5>
+                    <div class="container py-5">
+                        <div class="card shadow-lg border-0 rounded-4 mx-auto p-4" style="max-width: 840px;">
+                            <form th:action="@{/updateprofileadmin}" method="put">
 
-                            </div>
+                                <!-- PROFILE IMAGE SECTION -->
+                                <div class="text-center mb-4">
+                                    <img th:if="${user_master.profile_pic != null}" th:src="@{/userphoto}"
+                                         alt="Profile Picture"
+                                         class="rounded-circle border border-3 border-primary img-fluid"
+                                         style="width: 180px; height: 180px; object-fit: cover;">
+                                    <div th:unless="${user_master.profile_pic != null}">
+                                        <i class="bi bi-person-circle text-primary" style="font-size: 100px;"></i>
+                                    </div>
+                                    <h4 class="mt-3 fw-semibold">Admin Profile</h4>
+                                </div>
 
-                            <div class="tab-pane fade" id="user_notifications" role="tabpanel">
-                                <h5>User Notifications</h5>
-                                <p>User Notifications list goes here.</p>
-                            </div>
+                                <!-- PROFILE INFO SECTION -->
+                                <div class="px-3">
+                                    <h4 class="fw-bold mb-4 text-primary text-center">Profile Information</h4>
+
+                                    <div class="row">
+                                        <div class=" col-lg-6 mb-3">
+                                            <label class="form-label fw-bold">Name</label>
+                                            <input type="text" class="form-control" th:value="${user_master.name}" name="name">
+                                        </div>
+
+                                        <div class="col-lg-6 mb-3">
+                                            <label class="form-label fw-bold">Email</label>
+                                            <input type="email" class="form-control" th:value="${user_master.email}" name="email">
+                                        </div>
+                                    </div>
+                                    <div class="row">
+                                        <div class="col-lg-6 mb-3">
+                                            <label class="form-label fw-bold">Address</label>
+                                            <input type="text" class="form-control" th:value="${user_master.address}" name="address">
+                                        </div>
+
+                                        <div class="col-lg-6 mb-3">
+                                            <label class="form-label fw-bold">Contact</label>
+                                            <input type="text" class="form-control" th:value="${user_master.contact}" name="contact">
+                                        </div>
+                                    </div>
+                                    <!-- BUTTONS -->
+                                    <div class="d-flex justify-content-end gap-3 mt-4">
+                                        <button type="reset" class="btn btn-outline-secondary px-4">Reset</button>
+                                        <button type="submit" class="btn btn-success px-4">Update</button>
+                                    </div>
+                                </div>
+                            </form>
                         </div>
                     </div>
 
                 </div>
+<!--                profile edit code ends here.-->
+
+
+
             </div>
 
         </main>
